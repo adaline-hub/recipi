@@ -67,14 +67,23 @@ export default function RecipeList({ onSelectRecipe, onAddRecipe, onImportExport
               <button
                 key={recipe.id}
                 onClick={() => onSelectRecipe(recipe.id)}
-                className="w-full text-left bg-white rounded-2xl p-4 shadow-sm border border-orange-100 active:bg-orange-50"
+                className="w-full text-left bg-white rounded-2xl p-4 shadow-sm border border-orange-100 active:bg-orange-50 flex items-center gap-3"
               >
-                <h2 className="text-xl font-bold text-gray-800 mb-1">{recipe.title}</h2>
-                {recipe.ingredients.length > 0 && (
-                  <p className="text-gray-500 text-sm">
-                    {recipe.ingredients.slice(0, 2).join(' · ')}
-                    {recipe.ingredients.length > 2 && ` · +${recipe.ingredients.length - 2} more`}
-                  </p>
+                <div className="flex-1 min-w-0">
+                  <h2 className="text-xl font-bold text-gray-800 mb-1">{recipe.title}</h2>
+                  {recipe.ingredients.length > 0 && (
+                    <p className="text-gray-500 text-sm truncate">
+                      {recipe.ingredients.slice(0, 2).join(' · ')}
+                      {recipe.ingredients.length > 2 && ` · +${recipe.ingredients.length - 2} more`}
+                    </p>
+                  )}
+                </div>
+                {recipe.photo && (
+                  <img
+                    src={recipe.photo}
+                    alt={recipe.title}
+                    className="w-16 h-16 rounded-xl object-cover flex-shrink-0"
+                  />
                 )}
               </button>
             ))}

@@ -32,6 +32,15 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
       </div>
 
       <div className="px-4 py-6 space-y-6">
+        {/* Photo */}
+        {recipe.photo && (
+          <img
+            src={recipe.photo}
+            alt={recipe.title}
+            className="w-full rounded-2xl object-cover max-h-72 mb-2"
+          />
+        )}
+
         {/* Ingredients */}
         <section>
           <h2 className="text-lg font-bold text-orange-700 mb-3 uppercase tracking-wide">{t('detail.ingredients')}</h2>

@@ -1,0 +1,60 @@
+{
+  "app": {
+    "title": "Recipi 🍴",
+    "tagline": "家族食谱，随时在手"
+  },
+  "list": {
+    "search_placeholder": "搜索食谱...",
+    "add_button": "＋ 新增食谱",
+    "loading": "加载中…",
+    "no_match": "找不到符合「{{query}}」的食谱",
+    "empty_title": "还没有食谱！",
+    "empty_hint": "点击「新增食谱」开始使用。",
+    "import_export_link": "导入／导出食谱"
+  },
+  "detail": {
+    "back": "← 返回",
+    "ingredients": "食材",
+    "instructions": "做法",
+    "notes": "备注",
+    "edit": "编辑食谱",
+    "delete": "删除食谱",
+    "confirm_msg": "确定要删除吗？此操作无法复原。",
+    "cancel": "取消",
+    "confirm_delete": "是，删除",
+    "loading": "加载中…"
+  },
+  "form": {
+    "back": "← 返回",
+    "title_add": "新食谱",
+    "title_edit": "编辑食谱",
+    "label_name": "食谱名称",
+    "label_name_required": "食谱名称 *",
+    "label_ingredients": "食材 *",
+    "ingredients_hint": "（每行一项）",
+    "ingredients_placeholder": "面粉 2杯\n盐 1茶匙\n黄油 3汤匙",
+    "label_instructions": "做法",
+    "label_notes": "备注",
+    "label_photo": "照片",
+    "optional_hint": "（选填）",
+    "photo_tap": "点击以添加照片",
+    "save_new": "新增食谱",
+    "save_edit": "保存变更",
+    "saving": "保存中…",
+    "error_title": "食谱名称为必填。",
+    "error_ingredients": "请至少输入一项食材。"
+  },
+  "importexport": {
+    "title": "导入／导出",
+    "back": "← 返回",
+    "export_button": "导出食谱",
+    "export_hint": "将所有食谱下载为 JSON 文件",
+    "import_button": "导入食谱",
+    "import_hint": "从 JSON 文件合并食谱",
+    "import_summary": "新增 {{added}} 条、更新 {{updated}} 条、跳过 {{skipped}} 条",
+    "import_error": "导入失败：{{error}}"
+  },
+  "lang": {
+    "label": "语言"
+  }
+}

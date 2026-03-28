@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { db } from '../db';
 import { useRecipe } from '../hooks/useRecipes';
+import { resizeAndEncode } from '../utils/imageUtils';
 
 export default function RecipeForm({ recipeId, onBack, onSaved }) {
   const existing = useRecipe(recipeId);
@@ -11,6 +12,7 @@ export default function RecipeForm({ recipeId, onBack, onSaved }) {
   const [ingredientsText, setIngredientsText] = useState('');
   const [instructions, setInstructions] = useState('');
   const [notes, setNotes] = useState('');
+  const [photo, setPhoto] = useState(null);
   const [errors, setErrors] = useState({});
   const [saving, setSaving] = useState(false);
 
@@ -23,6 +25,7 @@ export default function RecipeForm({ recipeId, onBack, onSaved }) {
       setIngredientsText(existing.ingredients.join('\n'));
       setInstructions(existing.instructions || '');
       setNotes(existing.notes || '');
+      setPhoto(existing.photo || null);
     }
   }, [existing]);
 
@@ -53,6 +56,7 @@ export default function RecipeForm({ recipeId, onBack, onSaved }) {
           ingredients,
           instructions: instructions.trim(),
           notes: notes.trim(),
+          photo: photo || null,
           updatedAt: now,
         });
         onSaved(recipeId);
@@ -64,6 +68,7 @@ export default function RecipeForm({ recipeId, onBack, onSaved }) {
           ingredients,
           instructions: instructions.trim(),
           notes: notes.trim(),
+          photo: photo || null,
           createdAt: now,
           updatedAt: now,
         });
@@ -143,6 +148,46 @@ export default function RecipeForm({ recipeId, onBack, onSaved }) {
             rows={3}
             className="w-full px-4 py-3 rounded-xl border-2 border-orange-200 text-base focus:outline-none focus:border-orange-400 bg-white resize-none"
           />
+        </div>
+
+        {/* Photo */}
+        <div>
+          <label className="block text-orange-700 font-bold mb-1 text-sm uppercase tracking-wide">
+            {t('form.label_photo')} <span className="normal-case font-normal text-orange-400">{t('form.optional_hint')}</span>
+          </label>
+          {photo ? (
+            <div className="relative">
+              <img src={photo} alt="Recipe" className="w-full rounded-xl object-cover max-h-64" />
+              <button
+                type="button"
+                onClick={() => setPhoto(null)}
+                className="absolute top-2 right-2 bg-red-500 text-white text-xs rounded-full w-7 h-7 flex items-center justify-center font-bold"
+              >
+                ✕
+              </button>
+            </div>
+          ) : (
+            <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-orange-200 rounded-xl cursor-pointer bg-white hover:bg-orange-50">
+              <span className="text-3xl">📷</span>
+              <span className="text-orange-400 text-sm mt-1">{t('form.photo_tap')}</span>
+              <input
+                type="file"
+                accept="image/*"
+                capture="environment"
+                className="hidden"
+                onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  try {
+                    const b64 = await resizeAndEncode(file);
+                    setPhoto(b64);
+                  } catch {
+                    // fail silently — photo is optional
+                  }
+                }}
+              />
+            </label>
+          )}
         </div>
 
         {/* Save button */}

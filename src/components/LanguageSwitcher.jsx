@@ -4,7 +4,7 @@ const LANGUAGES = [
   { code: 'en', label: 'EN' },
   { code: 'fr', label: 'FR' },
   { code: 'ja', label: 'JA' },
-  { code: 'zh-TW', label: '繁中' },
+  { code: 'zh-CN', label: '简中' },
 ];
 
 export default function LanguageSwitcher() {

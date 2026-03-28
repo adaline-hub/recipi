@@ -40,7 +40,9 @@
     "save_edit": "Save Changes",
     "saving": "Saving…",
     "error_title": "Title is required.",
-    "error_ingredients": "At least one ingredient is required."
+    "error_ingredients": "At least one ingredient is required.",
+    "label_photo": "Photo",
+    "photo_tap": "Tap to add a photo"
   },
   "importexport": {
     "title": "Import / Export",
