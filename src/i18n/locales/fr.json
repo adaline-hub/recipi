@@ -1,0 +1,58 @@
+{
+  "app": {
+    "title": "Recipi 🍴",
+    "tagline": "Vos recettes de famille, toujours à portée"
+  },
+  "list": {
+    "search_placeholder": "Rechercher des recettes...",
+    "add_button": "＋ Ajouter une recette",
+    "loading": "Chargement…",
+    "no_match": "Aucune recette ne correspond à « {{query}} »",
+    "empty_title": "Pas encore de recettes !",
+    "empty_hint": "Appuyez sur « Ajouter une recette » pour commencer.",
+    "import_export_link": "Importer / Exporter des recettes"
+  },
+  "detail": {
+    "back": "← Retour",
+    "ingredients": "Ingrédients",
+    "instructions": "Instructions",
+    "notes": "Notes",
+    "edit": "Modifier la recette",
+    "delete": "Supprimer la recette",
+    "confirm_msg": "Êtes-vous sûr ? Cette action est irréversible.",
+    "cancel": "Annuler",
+    "confirm_delete": "Oui, supprimer",
+    "loading": "Chargement…"
+  },
+  "form": {
+    "back": "← Retour",
+    "title_add": "Nouvelle recette",
+    "title_edit": "Modifier la recette",
+    "label_name": "Nom de la recette",
+    "label_name_required": "Nom de la recette *",
+    "label_ingredients": "Ingrédients *",
+    "ingredients_hint": "(un par ligne)",
+    "ingredients_placeholder": "2 tasses de farine\n1 c. à café de sel\n3 c. à soupe de beurre",
+    "label_instructions": "Instructions",
+    "label_notes": "Notes",
+    "optional_hint": "(facultatif)",
+    "save_new": "Ajouter la recette",
+    "save_edit": "Enregistrer les modifications",
+    "saving": "Enregistrement…",
+    "error_title": "Le nom est requis.",
+    "error_ingredients": "Au moins un ingrédient est requis."
+  },
+  "importexport": {
+    "title": "Importer / Exporter",
+    "back": "← Retour",
+    "export_button": "Exporter les recettes",
+    "export_hint": "Télécharge toutes les recettes en JSON",
+    "import_button": "Importer des recettes",
+    "import_hint": "Fusionner des recettes depuis un fichier JSON",
+    "import_summary": "Ajouté {{added}}, Mis à jour {{updated}}, Ignoré {{skipped}}",
+    "import_error": "Échec de l'importation : {{error}}"
+  },
+  "lang": {
+    "label": "Langue"
+  }
+}

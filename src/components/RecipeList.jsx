@@ -1,9 +1,12 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useRecipes } from '../hooks/useRecipes';
+import LanguageSwitcher from './LanguageSwitcher';
 
 export default function RecipeList({ onSelectRecipe, onAddRecipe, onImportExport }) {
   const recipes = useRecipes();
   const [search, setSearch] = useState('');
+  const { t } = useTranslation();
 
   const filtered = (recipes || []).filter((r) =>
     r.title.toLowerCase().includes(search.toLowerCase())
@@ -13,15 +16,22 @@ export default function RecipeList({ onSelectRecipe, onAddRecipe, onImportExport
     <div className="min-h-screen" style={{ backgroundColor: '#fffbeb' }}>
       {/* Header */}
       <div style={{ backgroundColor: '#f97316' }} className="px-4 pt-10 pb-6">
-        <h1 className="text-3xl font-bold text-white mb-1">Recipi 🍴</h1>
-        <p className="text-orange-100 text-sm">Your family recipes, always close</p>
+        <div className="flex items-start justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-white mb-1">{t('app.title')}</h1>
+            <p className="text-orange-100 text-sm">{t('app.tagline')}</p>
+          </div>
+          <div className="mt-1">
+            <LanguageSwitcher />
+          </div>
+        </div>
       </div>
 
       <div className="px-4 py-4 space-y-4">
         {/* Search */}
         <input
           type="text"
-          placeholder="Search recipes..."
+          placeholder={t('list.search_placeholder')}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="w-full px-4 py-3 rounded-xl border-2 border-orange-200 text-lg focus:outline-none focus:border-orange-400 bg-white"
@@ -33,21 +43,21 @@ export default function RecipeList({ onSelectRecipe, onAddRecipe, onImportExport
           className="w-full py-4 rounded-xl text-white text-lg font-semibold"
           style={{ backgroundColor: '#f97316' }}
         >
-          + Add Recipe
+          {t('list.add_button')}
         </button>
 
         {/* Recipe cards */}
         {recipes === undefined ? (
-          <p className="text-center text-orange-400 text-lg py-8">Loading…</p>
+          <p className="text-center text-orange-400 text-lg py-8">{t('list.loading')}</p>
         ) : filtered.length === 0 ? (
           <div className="text-center py-12">
             {search ? (
-              <p className="text-orange-400 text-lg">No recipes match "{search}"</p>
+              <p className="text-orange-400 text-lg">{t('list.no_match', { query: search })}</p>
             ) : (
               <div className="space-y-2">
                 <p className="text-5xl">👩‍🍳</p>
-                <p className="text-orange-500 text-xl font-medium">No recipes yet!</p>
-                <p className="text-orange-400">Tap "Add Recipe" to get started.</p>
+                <p className="text-orange-500 text-xl font-medium">{t('list.empty_title')}</p>
+                <p className="text-orange-400">{t('list.empty_hint')}</p>
               </div>
             )}
           </div>
@@ -77,7 +87,7 @@ export default function RecipeList({ onSelectRecipe, onAddRecipe, onImportExport
             onClick={onImportExport}
             className="text-orange-400 underline text-sm"
           >
-            Import / Export recipes
+            {t('list.import_export_link')}
           </button>
         </div>
       </div>

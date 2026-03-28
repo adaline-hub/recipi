@@ -1,0 +1,58 @@
+{
+  "app": {
+    "title": "Recipi 🍴",
+    "tagline": "Your family recipes, always close"
+  },
+  "list": {
+    "search_placeholder": "Search recipes...",
+    "add_button": "＋ Add Recipe",
+    "loading": "Loading…",
+    "no_match": "No recipes match \"{{query}}\"",
+    "empty_title": "No recipes yet!",
+    "empty_hint": "Tap \"Add Recipe\" to get started.",
+    "import_export_link": "Import / Export recipes"
+  },
+  "detail": {
+    "back": "← Back",
+    "ingredients": "Ingredients",
+    "instructions": "Instructions",
+    "notes": "Notes",
+    "edit": "Edit Recipe",
+    "delete": "Delete Recipe",
+    "confirm_msg": "Are you sure? This can't be undone.",
+    "cancel": "Cancel",
+    "confirm_delete": "Yes, Delete",
+    "loading": "Loading…"
+  },
+  "form": {
+    "back": "← Back",
+    "title_add": "New Recipe",
+    "title_edit": "Edit Recipe",
+    "label_name": "Recipe Name",
+    "label_name_required": "Recipe Name *",
+    "label_ingredients": "Ingredients *",
+    "ingredients_hint": "(one per line)",
+    "ingredients_placeholder": "2 cups flour\n1 tsp salt\n3 tbsp butter",
+    "label_instructions": "Instructions",
+    "label_notes": "Notes",
+    "optional_hint": "(optional)",
+    "save_new": "Add Recipe",
+    "save_edit": "Save Changes",
+    "saving": "Saving…",
+    "error_title": "Title is required.",
+    "error_ingredients": "At least one ingredient is required."
+  },
+  "importexport": {
+    "title": "Import / Export",
+    "back": "← Back",
+    "export_button": "Export Recipes",
+    "export_hint": "Downloads all recipes as a JSON file",
+    "import_button": "Import Recipes",
+    "import_hint": "Merge recipes from a JSON file",
+    "import_summary": "Added {{added}}, Updated {{updated}}, Skipped {{skipped}}",
+    "import_error": "Import failed: {{error}}"
+  },
+  "lang": {
+    "label": "Language"
+  }
+}

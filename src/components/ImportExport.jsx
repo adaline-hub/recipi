@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { exportRecipes, importRecipes } from '../utils/importExport';
 
 export default function ImportExport({ onBack }) {
@@ -6,6 +7,7 @@ export default function ImportExport({ onBack }) {
   const [status, setStatus] = useState(null); // { type: 'success'|'error', message }
   const [importing, setImporting] = useState(false);
   const [exporting, setExporting] = useState(false);
+  const { t } = useTranslation();
 
   async function handleExport() {
     setExporting(true);
@@ -29,10 +31,10 @@ export default function ImportExport({ onBack }) {
       const result = await importRecipes(file);
       setStatus({
         type: 'success',
-        message: `Done! Added ${result.added}, Updated ${result.updated}, Skipped ${result.skipped}`,
+        message: t('importexport.import_summary', { added: result.added, updated: result.updated, skipped: result.skipped }),
       });
     } catch (err) {
-      setStatus({ type: 'error', message: `Import failed: ${err.message}` });
+      setStatus({ type: 'error', message: t('importexport.import_error', { error: err.message }) });
     } finally {
       setImporting(false);
       // Reset file input so same file can be re-selected
@@ -45,35 +47,30 @@ export default function ImportExport({ onBack }) {
       {/* Header */}
       <div style={{ backgroundColor: '#f97316' }} className="px-4 pt-10 pb-6">
         <button onClick={onBack} className="text-orange-100 text-sm mb-3">
-          ← Back
+          {t('importexport.back')}
         </button>
-        <h1 className="text-2xl font-bold text-white">Import / Export</h1>
-        <p className="text-orange-100 text-sm mt-1">Back up or move your recipes</p>
+        <h1 className="text-2xl font-bold text-white">{t('importexport.title')}</h1>
       </div>
 
       <div className="px-4 py-6 space-y-4">
         {/* Export */}
         <div className="bg-white rounded-2xl p-5 border border-orange-100 shadow-sm">
-          <h2 className="text-lg font-bold text-gray-800 mb-1">📤 Export Recipes</h2>
-          <p className="text-gray-500 text-sm mb-4">
-            Download all your recipes as a JSON file. Great for backups or moving to another device.
-          </p>
+          <h2 className="text-lg font-bold text-gray-800 mb-1">📤 {t('importexport.export_button')}</h2>
+          <p className="text-gray-500 text-sm mb-4">{t('importexport.export_hint')}</p>
           <button
             onClick={handleExport}
             disabled={exporting}
             className="w-full py-4 rounded-xl text-white text-base font-semibold disabled:opacity-60"
             style={{ backgroundColor: '#f97316' }}
           >
-            {exporting ? 'Exporting…' : 'Download Backup'}
+            {exporting ? '…' : t('importexport.export_button')}
           </button>
         </div>
 
         {/* Import */}
         <div className="bg-white rounded-2xl p-5 border border-orange-100 shadow-sm">
-          <h2 className="text-lg font-bold text-gray-800 mb-1">📥 Import Recipes</h2>
-          <p className="text-gray-500 text-sm mb-4">
-            Load recipes from a Recipi JSON backup. New recipes will be added; existing ones updated only if newer.
-          </p>
+          <h2 className="text-lg font-bold text-gray-800 mb-1">📥 {t('importexport.import_button')}</h2>
+          <p className="text-gray-500 text-sm mb-4">{t('importexport.import_hint')}</p>
           <input
             ref={fileInputRef}
             type="file"
@@ -88,7 +85,7 @@ export default function ImportExport({ onBack }) {
               importing ? 'opacity-60 pointer-events-none' : 'hover:bg-orange-50'
             }`}
           >
-            {importing ? 'Importing…' : 'Choose JSON File'}
+            {importing ? '…' : t('importexport.import_button')}
           </label>
         </div>
 

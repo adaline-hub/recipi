@@ -1,0 +1,58 @@
+{
+  "app": {
+    "title": "Recipi 🍴",
+    "tagline": "家族食譜，隨時在手"
+  },
+  "list": {
+    "search_placeholder": "搜尋食譜...",
+    "add_button": "＋ 新增食譜",
+    "loading": "載入中…",
+    "no_match": "找不到符合「{{query}}」的食譜",
+    "empty_title": "還沒有食譜！",
+    "empty_hint": "點選「新增食譜」開始使用。",
+    "import_export_link": "匯入／匯出食譜"
+  },
+  "detail": {
+    "back": "← 返回",
+    "ingredients": "食材",
+    "instructions": "做法",
+    "notes": "備註",
+    "edit": "編輯食譜",
+    "delete": "刪除食譜",
+    "confirm_msg": "確定要刪除嗎？此操作無法復原。",
+    "cancel": "取消",
+    "confirm_delete": "是，刪除",
+    "loading": "載入中…"
+  },
+  "form": {
+    "back": "← 返回",
+    "title_add": "新食譜",
+    "title_edit": "編輯食譜",
+    "label_name": "食譜名稱",
+    "label_name_required": "食譜名稱 *",
+    "label_ingredients": "食材 *",
+    "ingredients_hint": "（每行一項）",
+    "ingredients_placeholder": "麵粉 2杯\n鹽 1茶匙\n奶油 3湯匙",
+    "label_instructions": "做法",
+    "label_notes": "備註",
+    "optional_hint": "（選填）",
+    "save_new": "新增食譜",
+    "save_edit": "儲存變更",
+    "saving": "儲存中…",
+    "error_title": "食譜名稱為必填。",
+    "error_ingredients": "請至少輸入一項食材。"
+  },
+  "importexport": {
+    "title": "匯入／匯出",
+    "back": "← 返回",
+    "export_button": "匯出食譜",
+    "export_hint": "將所有食譜下載為 JSON 檔案",
+    "import_button": "匯入食譜",
+    "import_hint": "從 JSON 檔案合併食譜",
+    "import_summary": "新增 {{added}} 筆、更新 {{updated}} 筆、略過 {{skipped}} 筆",
+    "import_error": "匯入失敗：{{error}}"
+  },
+  "lang": {
+    "label": "語言"
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "app": {
+    "title": "Recipi 🍴",
+    "tagline": "家族のレシピをいつでも手元に"
+  },
+  "list": {
+    "search_placeholder": "レシピを検索...",
+    "add_button": "＋ レシピを追加",
+    "loading": "読み込み中…",
+    "no_match": "「{{query}}」に一致するレシピはありません",
+    "empty_title": "レシピがまだありません！",
+    "empty_hint": "「レシピを追加」をタップして始めましょう。",
+    "import_export_link": "インポート／エクスポート"
+  },
+  "detail": {
+    "back": "← 戻る",
+    "ingredients": "材料",
+    "instructions": "作り方",
+    "notes": "メモ",
+    "edit": "レシピを編集",
+    "delete": "レシピを削除",
+    "confirm_msg": "本当に削除しますか？この操作は元に戻せません。",
+    "cancel": "キャンセル",
+    "confirm_delete": "はい、削除する",
+    "loading": "読み込み中…"
+  },
+  "form": {
+    "back": "← 戻る",
+    "title_add": "新しいレシピ",
+    "title_edit": "レシピを編集",
+    "label_name": "レシピ名",
+    "label_name_required": "レシピ名 *",
+    "label_ingredients": "材料 *",
+    "ingredients_hint": "（1行に1つ）",
+    "ingredients_placeholder": "薄力粉 2カップ\n塩 小さじ1\nバター 大さじ3",
+    "label_instructions": "作り方",
+    "label_notes": "メモ",
+    "optional_hint": "（任意）",
+    "save_new": "レシピを追加",
+    "save_edit": "変更を保存",
+    "saving": "保存中…",
+    "error_title": "レシピ名は必須です。",
+    "error_ingredients": "材料を少なくとも1つ入力してください。"
+  },
+  "importexport": {
+    "title": "インポート／エクスポート",
+    "back": "← 戻る",
+    "export_button": "レシピをエクスポート",
+    "export_hint": "全レシピをJSONファイルでダウンロード",
+    "import_button": "レシピをインポート",
+    "import_hint": "JSONファイルからレシピを取り込む",
+    "import_summary": "追加 {{added}}件、更新 {{updated}}件、スキップ {{skipped}}件",
+    "import_error": "インポート失敗：{{error}}"
+  },
+  "lang": {
+    "label": "言語"
+  }
+}

@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { db } from '../db';
 import { useRecipe } from '../hooks/useRecipes';
 
 export default function RecipeForm({ recipeId, onBack, onSaved }) {
   const existing = useRecipe(recipeId);
+  const { t } = useTranslation();
 
   const [title, setTitle] = useState('');
   const [ingredientsText, setIngredientsText] = useState('');
@@ -26,9 +28,9 @@ export default function RecipeForm({ recipeId, onBack, onSaved }) {
 
   function validate() {
     const errs = {};
-    if (!title.trim()) errs.title = 'Title is required.';
+    if (!title.trim()) errs.title = t('form.error_title');
     const ings = ingredientsText.split('\n').map((s) => s.trim()).filter(Boolean);
-    if (ings.length === 0) errs.ingredients = 'At least one ingredient is required.';
+    if (ings.length === 0) errs.ingredients = t('form.error_ingredients');
     return errs;
   }
 
@@ -77,10 +79,10 @@ export default function RecipeForm({ recipeId, onBack, onSaved }) {
       {/* Header */}
       <div style={{ backgroundColor: '#f97316' }} className="px-4 pt-10 pb-6">
         <button onClick={onBack} className="text-orange-100 text-sm mb-3">
-          ← Back
+          {t('form.back')}
         </button>
         <h1 className="text-2xl font-bold text-white">
-          {isEdit ? 'Edit Recipe' : 'New Recipe'}
+          {isEdit ? t('form.title_edit') : t('form.title_add')}
         </h1>
       </div>
 
@@ -88,7 +90,7 @@ export default function RecipeForm({ recipeId, onBack, onSaved }) {
         {/* Title */}
         <div>
           <label className="block text-orange-700 font-bold mb-1 text-sm uppercase tracking-wide">
-            Recipe Name *
+            {t('form.label_name_required')}
           </label>
           <input
             type="text"
@@ -103,12 +105,12 @@ export default function RecipeForm({ recipeId, onBack, onSaved }) {
         {/* Ingredients */}
         <div>
           <label className="block text-orange-700 font-bold mb-1 text-sm uppercase tracking-wide">
-            Ingredients * <span className="normal-case font-normal text-orange-400">(one per line)</span>
+            {t('form.label_ingredients')} <span className="normal-case font-normal text-orange-400">{t('form.ingredients_hint')}</span>
           </label>
           <textarea
             value={ingredientsText}
             onChange={(e) => setIngredientsText(e.target.value)}
-            placeholder={"2 cups flour\n1 tsp salt\n3 tbsp butter"}
+            placeholder={t('form.ingredients_placeholder')}
             rows={6}
             className="w-full px-4 py-3 rounded-xl border-2 border-orange-200 text-base focus:outline-none focus:border-orange-400 bg-white resize-none"
           />
@@ -118,7 +120,7 @@ export default function RecipeForm({ recipeId, onBack, onSaved }) {
         {/* Instructions */}
         <div>
           <label className="block text-orange-700 font-bold mb-1 text-sm uppercase tracking-wide">
-            Instructions
+            {t('form.label_instructions')}
           </label>
           <textarea
             value={instructions}
@@ -132,7 +134,7 @@ export default function RecipeForm({ recipeId, onBack, onSaved }) {
         {/* Notes */}
         <div>
           <label className="block text-orange-700 font-bold mb-1 text-sm uppercase tracking-wide">
-            Notes <span className="normal-case font-normal text-orange-400">(optional)</span>
+            {t('form.label_notes')} <span className="normal-case font-normal text-orange-400">{t('form.optional_hint')}</span>
           </label>
           <textarea
             value={notes}
@@ -150,7 +152,7 @@ export default function RecipeForm({ recipeId, onBack, onSaved }) {
           className="w-full py-4 rounded-xl text-white text-lg font-semibold disabled:opacity-60"
           style={{ backgroundColor: '#f97316' }}
         >
-          {saving ? 'Saving…' : isEdit ? 'Save Changes' : 'Add Recipe'}
+          {saving ? t('form.saving') : isEdit ? t('form.save_edit') : t('form.save_new')}
         </button>
       </div>
     </div>
