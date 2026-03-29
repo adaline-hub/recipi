@@ -65,6 +65,9 @@
   "lang": {
     "label": "Langue"
   },
+  "banner": {
+    "message": "Maman — merci de m'avoir aimée et d'avoir cuisiné d'innombrables délicieux repas au fil des années. Certains de mes plus beaux souvenirs avec toi sont dans la cuisine et autour de la table à manger. Si je n'ai pas su apprécier à sa juste valeur tous les fruits pelés que tu m'apportais quand j'étudiais dans ma chambre, je veux que tu saches maintenant que je ne les ai jamais oubliés depuis plus de 10 ans. Conservons ensemble tes recettes maintenant !"
+  },
   "translation": {
     "modal_title": "Ajouter une traduction",
     "modal_subtitle": "Traduire cette recette (originale en {{lang}})",

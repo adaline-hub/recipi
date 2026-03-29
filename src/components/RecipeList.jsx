@@ -30,7 +30,7 @@ export default function RecipeList({ onSelectRecipe, onAddRecipe, onImportExport
       {/* Message to Mom */}
       <div className="bg-white border-b-4 border-orange-200 px-4 py-6">
         <p className="text-center text-gray-700 text-sm leading-relaxed">
-          <span className="font-semibold">Mama</span> — thank you for loving me and cooking countless delicious meals for many years. Some of my fondest memories of us are in the kitchen and on the dining table with you. If I didn't appreciate the peeled cut fruits you would bring to my room when I was studying, you should know now that I never forget about them for the last 10+ years. Let's save these recipes from you now!
+          {t('banner.message')}
         </p>
       </div>
 
