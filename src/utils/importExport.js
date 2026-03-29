@@ -3,7 +3,7 @@ import { db } from '../db';
 export async function exportRecipes() {
   const recipes = await db.recipes.toArray();
   const data = {
-    version: 1,
+    version: 2,
     exportedAt: new Date().toISOString(),
     recipes,
   };
@@ -25,8 +25,9 @@ export async function importRecipes(file) {
       try {
         const raw = JSON.parse(e.target.result);
 
-        if (!raw || raw.version !== 1 || !Array.isArray(raw.recipes)) {
-          return reject(new Error('Invalid file format: must have version 1 and a recipes array.'));
+        // Support both v1 (no language/translations) and v2 (with language/translations)
+        if (!raw || (raw.version !== 1 && raw.version !== 2) || !Array.isArray(raw.recipes)) {
+          return reject(new Error('Invalid file format: must have version 1 or 2 and a recipes array.'));
         }
 
         let added = 0;
@@ -47,16 +48,35 @@ export async function importRecipes(file) {
             continue;
           }
 
-          const existing = await db.recipes.get(r.id);
+          // Normalize: v1 exports won't have language/translations — backfill defaults
+          const normalized = {
+            ...r,
+            language: r.language || 'en',
+            translations: r.translations || {
+              [r.language || 'en']: {
+                title: r.title,
+                ingredients: r.ingredients,
+                instructions: r.instructions,
+                notes: r.notes || '',
+              },
+            },
+          };
+
+          const existing = await db.recipes.get(normalized.id);
           if (existing) {
-            if (r.updatedAt > existing.updatedAt) {
-              await db.recipes.put(r);
+            if (normalized.updatedAt > existing.updatedAt) {
+              // Merge translations instead of overwriting, preserving locally-added translations
+              const mergedTranslations = {
+                ...(existing.translations || {}),
+                ...(normalized.translations || {}),
+              };
+              await db.recipes.put({ ...normalized, translations: mergedTranslations });
               updated++;
             } else {
               skipped++;
             }
           } else {
-            await db.recipes.add(r);
+            await db.recipes.add(normalized);
             added++;
           }
         }

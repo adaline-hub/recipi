@@ -22,7 +22,13 @@
     "confirm_msg": "确定要删除吗？此操作无法复原。",
     "cancel": "取消",
     "confirm_delete": "是，删除",
-    "loading": "加载中…"
+    "loading": "加载中…",
+    "original_language": "原文：{{lang}}",
+    "viewing_translation": "正在以{{lang}}显示",
+    "translation_count": "{{count}} 个翻译",
+    "add_translation": "添加翻译",
+    "manage_translations": "管理翻译",
+    "showing_original_notice": "暂无翻译 — 显示原文（{{lang}}）"
   },
   "form": {
     "back": "← 返回",
@@ -42,7 +48,9 @@
     "save_edit": "保存变更",
     "saving": "保存中…",
     "error_title": "食谱名称为必填。",
-    "error_ingredients": "请至少输入一项食材。"
+    "error_ingredients": "请至少输入一项食材。",
+    "label_language": "食谱语言",
+    "language_hint": "该食谱所使用的语言"
   },
   "importexport": {
     "title": "导入／导出",
@@ -56,5 +64,12 @@
   },
   "lang": {
     "label": "语言"
+  },
+  "translation": {
+    "modal_title": "添加翻译",
+    "modal_subtitle": "翻译此食谱（原文为{{lang}}）",
+    "target_language": "翻译为",
+    "original_label": "原文（{{lang}}）",
+    "save_button": "保存{{lang}}翻译"
   }
 }

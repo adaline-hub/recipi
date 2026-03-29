@@ -22,7 +22,13 @@
     "confirm_msg": "Are you sure? This can't be undone.",
     "cancel": "Cancel",
     "confirm_delete": "Yes, Delete",
-    "loading": "Loading…"
+    "loading": "Loading…",
+    "original_language": "Original: {{lang}}",
+    "viewing_translation": "Viewing in {{lang}}",
+    "translation_count": "{{count}} translation(s)",
+    "add_translation": "Add Translation",
+    "manage_translations": "Manage Translations",
+    "showing_original_notice": "No translation available — showing original ({{lang}})"
   },
   "form": {
     "back": "← Back",
@@ -42,7 +48,9 @@
     "error_title": "Title is required.",
     "error_ingredients": "At least one ingredient is required.",
     "label_photo": "Photo",
-    "photo_tap": "Tap to add a photo"
+    "photo_tap": "Tap to add a photo",
+    "label_language": "Recipe Language",
+    "language_hint": "The language this recipe is written in"
   },
   "importexport": {
     "title": "Import / Export",
@@ -56,5 +64,12 @@
   },
   "lang": {
     "label": "Language"
+  },
+  "translation": {
+    "modal_title": "Add Translation",
+    "modal_subtitle": "Translate this recipe (originally in {{lang}})",
+    "target_language": "Translate to",
+    "original_label": "Original ({{lang}})",
+    "save_button": "Save {{lang}} Translation"
   }
 }

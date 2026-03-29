@@ -2,11 +2,21 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRecipe } from '../hooks/useRecipes';
 import { db } from '../db';
+import TranslationModal from './TranslationModal';
+
+const LANGUAGE_LABELS = {
+  en: 'English',
+  fr: 'Français',
+  ja: '日本語',
+  'zh-CN': '中文（简体）',
+};
 
 export default function RecipeDetail({ recipeId, onBack, onEdit }) {
   const recipe = useRecipe(recipeId);
   const [confirming, setConfirming] = useState(false);
-  const { t } = useTranslation();
+  const [showTranslationModal, setShowTranslationModal] = useState(false);
+  const { t, i18n } = useTranslation();
+  const currentLang = i18n.language;
 
   async function handleDelete() {
     await db.recipes.delete(recipeId);
@@ -21,6 +31,23 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
     );
   }
 
+  // Resolve displayed content: prefer translation for current app language, fall back to original
+  const translations = recipe.translations || {};
+  const translatedContent = translations[currentLang];
+  const isTranslated = !!translatedContent && currentLang !== recipe.language;
+  const isOriginalLang = currentLang === recipe.language;
+
+  const displayTitle = translatedContent?.title || recipe.title;
+  const displayIngredients = translatedContent?.ingredients || recipe.ingredients;
+  const displayInstructions = translatedContent?.instructions ?? recipe.instructions;
+  const displayNotes = translatedContent?.notes ?? recipe.notes;
+
+  const originalLangLabel = LANGUAGE_LABELS[recipe.language] || recipe.language || 'English';
+  const currentLangLabel = LANGUAGE_LABELS[currentLang] || currentLang;
+
+  // Count available translations (excluding original language)
+  const translationCount = Object.keys(translations).filter((l) => l !== recipe.language).length;
+
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#fffbeb' }}>
       {/* Header */}
@@ -28,7 +55,29 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
         <button onClick={onBack} className="text-orange-100 text-sm mb-3 flex items-center gap-1">
           {t('detail.back')}
         </button>
-        <h1 className="text-2xl font-bold text-white leading-tight">{recipe.title}</h1>
+        <h1 className="text-2xl font-bold text-white leading-tight">{displayTitle}</h1>
+
+        {/* Language badge row */}
+        <div className="flex items-center gap-2 mt-2 flex-wrap">
+          {/* Original language tag */}
+          <span className="bg-orange-600 text-orange-100 text-xs px-2 py-0.5 rounded-full">
+            {t('detail.original_language', { lang: originalLangLabel })}
+          </span>
+
+          {/* "Viewing in X" tag when showing a translation */}
+          {isTranslated && (
+            <span className="bg-white text-orange-600 text-xs px-2 py-0.5 rounded-full font-medium">
+              {t('detail.viewing_translation', { lang: currentLangLabel })}
+            </span>
+          )}
+
+          {/* Translation count badge */}
+          {translationCount > 0 && (
+            <span className="bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full">
+              {t('detail.translation_count', { count: translationCount })}
+            </span>
+          )}
+        </div>
       </div>
 
       <div className="px-4 py-6 space-y-6">
@@ -36,16 +85,23 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
         {recipe.photo && (
           <img
             src={recipe.photo}
-            alt={recipe.title}
+            alt={displayTitle}
             className="w-full rounded-2xl object-cover max-h-72 mb-2"
           />
+        )}
+
+        {/* Translation notice when viewing original but a translation exists for another language */}
+        {!isTranslated && !isOriginalLang && (
+          <div className="bg-orange-50 border border-orange-200 rounded-xl px-4 py-3 text-sm text-orange-600">
+            {t('detail.showing_original_notice', { lang: originalLangLabel })}
+          </div>
         )}
 
         {/* Ingredients */}
         <section>
           <h2 className="text-lg font-bold text-orange-700 mb-3 uppercase tracking-wide">{t('detail.ingredients')}</h2>
           <ul className="space-y-2">
-            {recipe.ingredients.map((ing, i) => (
+            {displayIngredients.map((ing, i) => (
               <li key={i} className="flex items-start gap-2 text-gray-800 text-base">
                 <span className="text-orange-400 mt-1">•</span>
                 <span>{ing}</span>
@@ -55,18 +111,18 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
         </section>
 
         {/* Instructions */}
-        {recipe.instructions && (
+        {displayInstructions && (
           <section>
             <h2 className="text-lg font-bold text-orange-700 mb-3 uppercase tracking-wide">{t('detail.instructions')}</h2>
-            <p className="text-gray-800 text-base leading-relaxed whitespace-pre-wrap">{recipe.instructions}</p>
+            <p className="text-gray-800 text-base leading-relaxed whitespace-pre-wrap">{displayInstructions}</p>
           </section>
         )}
 
         {/* Notes */}
-        {recipe.notes && (
+        {displayNotes && (
           <section>
             <h2 className="text-lg font-bold text-orange-700 mb-3 uppercase tracking-wide">{t('detail.notes')}</h2>
-            <p className="text-gray-600 text-base leading-relaxed whitespace-pre-wrap">{recipe.notes}</p>
+            <p className="text-gray-600 text-base leading-relaxed whitespace-pre-wrap">{displayNotes}</p>
           </section>
         )}
 
@@ -78,6 +134,14 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
             style={{ backgroundColor: '#f97316' }}
           >
             {t('detail.edit')}
+          </button>
+
+          {/* Add / Edit Translation button */}
+          <button
+            onClick={() => setShowTranslationModal(true)}
+            className="w-full py-4 rounded-xl border-2 border-orange-300 text-orange-600 text-lg font-semibold bg-white"
+          >
+            🌐 {translationCount > 0 ? t('detail.manage_translations') : t('detail.add_translation')}
           </button>
 
           {!confirming ? (
@@ -108,6 +172,15 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
           )}
         </div>
       </div>
+
+      {/* Translation Modal */}
+      {showTranslationModal && (
+        <TranslationModal
+          recipe={recipe}
+          onClose={() => setShowTranslationModal(false)}
+          onSaved={() => setShowTranslationModal(false)}
+        />
+      )}
     </div>
   );
 }

@@ -22,7 +22,13 @@
     "confirm_msg": "本当に削除しますか？この操作は元に戻せません。",
     "cancel": "キャンセル",
     "confirm_delete": "はい、削除する",
-    "loading": "読み込み中…"
+    "loading": "読み込み中…",
+    "original_language": "原文：{{lang}}",
+    "viewing_translation": "{{lang}}で表示中",
+    "translation_count": "翻訳 {{count}} 件",
+    "add_translation": "翻訳を追加",
+    "manage_translations": "翻訳を管理",
+    "showing_original_notice": "翻訳がありません — 原文を表示中（{{lang}}）"
   },
   "form": {
     "back": "← 戻る",
@@ -42,7 +48,9 @@
     "error_title": "レシピ名は必須です。",
     "error_ingredients": "材料を少なくとも1つ入力してください。",
     "label_photo": "写真",
-    "photo_tap": "タップして写真を追加"
+    "photo_tap": "タップして写真を追加",
+    "label_language": "レシピの言語",
+    "language_hint": "このレシピが書かれている言語"
   },
   "importexport": {
     "title": "インポート／エクスポート",
@@ -56,5 +64,12 @@
   },
   "lang": {
     "label": "言語"
+  },
+  "translation": {
+    "modal_title": "翻訳を追加",
+    "modal_subtitle": "このレシピを翻訳（原文：{{lang}}）",
+    "target_language": "翻訳先の言語",
+    "original_label": "原文（{{lang}}）",
+    "save_button": "{{lang}}の翻訳を保存"
   }
 }

@@ -22,7 +22,13 @@
     "confirm_msg": "Êtes-vous sûr ? Cette action est irréversible.",
     "cancel": "Annuler",
     "confirm_delete": "Oui, supprimer",
-    "loading": "Chargement…"
+    "loading": "Chargement…",
+    "original_language": "Original : {{lang}}",
+    "viewing_translation": "Affiché en {{lang}}",
+    "translation_count": "{{count}} traduction(s)",
+    "add_translation": "Ajouter une traduction",
+    "manage_translations": "Gérer les traductions",
+    "showing_original_notice": "Pas de traduction disponible — affichage de l'original ({{lang}})"
   },
   "form": {
     "back": "← Retour",
@@ -42,7 +48,9 @@
     "error_title": "Le nom est requis.",
     "error_ingredients": "Au moins un ingrédient est requis.",
     "label_photo": "Photo",
-    "photo_tap": "Appuyer pour ajouter une photo"
+    "photo_tap": "Appuyer pour ajouter une photo",
+    "label_language": "Langue de la recette",
+    "language_hint": "La langue dans laquelle cette recette est rédigée"
   },
   "importexport": {
     "title": "Importer / Exporter",
@@ -56,5 +64,12 @@
   },
   "lang": {
     "label": "Langue"
+  },
+  "translation": {
+    "modal_title": "Ajouter une traduction",
+    "modal_subtitle": "Traduire cette recette (originale en {{lang}})",
+    "target_language": "Traduire en",
+    "original_label": "Original ({{lang}})",
+    "save_button": "Enregistrer la traduction en {{lang}}"
   }
 }

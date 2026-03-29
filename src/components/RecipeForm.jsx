@@ -4,15 +4,24 @@ import { db } from '../db';
 import { useRecipe } from '../hooks/useRecipes';
 import { resizeAndEncode } from '../utils/imageUtils';
 
+const SUPPORTED_LANGUAGES = [
+  { code: 'en', label: 'English' },
+  { code: 'fr', label: 'Français' },
+  { code: 'ja', label: '日本語' },
+  { code: 'zh-CN', label: '中文（简体）' },
+];
+
 export default function RecipeForm({ recipeId, onBack, onSaved }) {
   const existing = useRecipe(recipeId);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const currentAppLang = i18n.language;
 
   const [title, setTitle] = useState('');
   const [ingredientsText, setIngredientsText] = useState('');
   const [instructions, setInstructions] = useState('');
   const [notes, setNotes] = useState('');
   const [photo, setPhoto] = useState(null);
+  const [language, setLanguage] = useState(currentAppLang);
   const [errors, setErrors] = useState({});
   const [saving, setSaving] = useState(false);
 
@@ -21,13 +30,26 @@ export default function RecipeForm({ recipeId, onBack, onSaved }) {
   // Pre-populate when editing
   useEffect(() => {
     if (existing) {
-      setTitle(existing.title);
-      setIngredientsText(existing.ingredients.join('\n'));
-      setInstructions(existing.instructions || '');
-      setNotes(existing.notes || '');
+      // Show content for the current app language if a translation exists, else original
+      const translations = existing.translations || {};
+      const langContent = translations[currentAppLang] || null;
+
+      if (langContent) {
+        setTitle(langContent.title || existing.title);
+        setIngredientsText((langContent.ingredients || existing.ingredients).join('\n'));
+        setInstructions(langContent.instructions || existing.instructions || '');
+        setNotes(langContent.notes || existing.notes || '');
+      } else {
+        setTitle(existing.title);
+        setIngredientsText(existing.ingredients.join('\n'));
+        setInstructions(existing.instructions || '');
+        setNotes(existing.notes || '');
+      }
+
       setPhoto(existing.photo || null);
+      setLanguage(existing.language || 'en');
     }
-  }, [existing]);
+  }, [existing, currentAppLang]);
 
   function validate() {
     const errs = {};
@@ -51,17 +73,50 @@ export default function RecipeForm({ recipeId, onBack, onSaved }) {
 
     try {
       if (isEdit) {
-        await db.recipes.update(recipeId, {
-          title: title.trim(),
-          ingredients,
-          instructions: instructions.trim(),
-          notes: notes.trim(),
+        const existingRecipe = await db.recipes.get(recipeId);
+        const existingTranslations = existingRecipe?.translations || {};
+
+        // Store the content for the current app language in translations
+        const updatedTranslations = {
+          ...existingTranslations,
+          [currentAppLang]: {
+            title: title.trim(),
+            ingredients,
+            instructions: instructions.trim(),
+            notes: notes.trim(),
+          },
+        };
+
+        // If editing in the original language, update top-level fields too
+        const originalLang = existingRecipe?.language || language;
+        const updatePayload = {
+          language: originalLang,
+          translations: updatedTranslations,
           photo: photo || null,
           updatedAt: now,
-        });
+        };
+
+        if (currentAppLang === originalLang) {
+          updatePayload.title = title.trim();
+          updatePayload.ingredients = ingredients;
+          updatePayload.instructions = instructions.trim();
+          updatePayload.notes = notes.trim();
+        }
+
+        await db.recipes.update(recipeId, updatePayload);
         onSaved(recipeId);
       } else {
         const id = crypto.randomUUID();
+        // For new recipes, store in both top-level and translations[language]
+        const translations = {
+          [language]: {
+            title: title.trim(),
+            ingredients,
+            instructions: instructions.trim(),
+            notes: notes.trim(),
+          },
+        };
+
         await db.recipes.add({
           id,
           title: title.trim(),
@@ -69,6 +124,8 @@ export default function RecipeForm({ recipeId, onBack, onSaved }) {
           instructions: instructions.trim(),
           notes: notes.trim(),
           photo: photo || null,
+          language,
+          translations,
           createdAt: now,
           updatedAt: now,
         });
@@ -92,6 +149,27 @@ export default function RecipeForm({ recipeId, onBack, onSaved }) {
       </div>
 
       <div className="px-4 py-6 space-y-5">
+        {/* Language (only shown when creating a new recipe) */}
+        {!isEdit && (
+          <div>
+            <label className="block text-orange-700 font-bold mb-1 text-sm uppercase tracking-wide">
+              {t('form.label_language')}
+            </label>
+            <select
+              value={language}
+              onChange={(e) => setLanguage(e.target.value)}
+              className="w-full px-4 py-3 rounded-xl border-2 border-orange-200 text-base focus:outline-none focus:border-orange-400 bg-white"
+            >
+              {SUPPORTED_LANGUAGES.map((lang) => (
+                <option key={lang.code} value={lang.code}>
+                  {lang.label}
+                </option>
+              ))}
+            </select>
+            <p className="text-orange-400 text-xs mt-1">{t('form.language_hint')}</p>
+          </div>
+        )}
+
         {/* Title */}
         <div>
           <label className="block text-orange-700 font-bold mb-1 text-sm uppercase tracking-wide">
