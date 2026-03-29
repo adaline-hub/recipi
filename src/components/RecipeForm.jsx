@@ -137,10 +137,10 @@ export default function RecipeForm({ recipeId, onBack, onSaved }) {
   }
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#fffbeb' }}>
+    <div className="min-h-screen" style={{ backgroundColor: '#f0f9ff' }}>
       {/* Header */}
-      <div style={{ backgroundColor: '#f97316' }} className="px-4 pt-10 pb-6">
-        <button onClick={onBack} className="text-orange-100 text-sm mb-3">
+      <div style={{ backgroundColor: '#3b82f6' }} className="px-4 pt-10 pb-6">
+        <button onClick={onBack} className="text-blue-100 text-sm mb-3">
           {t('form.back')}
         </button>
         <h1 className="text-2xl font-bold text-white">
@@ -152,13 +152,13 @@ export default function RecipeForm({ recipeId, onBack, onSaved }) {
         {/* Language (only shown when creating a new recipe) */}
         {!isEdit && (
           <div>
-            <label className="block text-orange-700 font-bold mb-1 text-sm uppercase tracking-wide">
+            <label className="block text-blue-700 font-bold mb-1 text-sm uppercase tracking-wide">
               {t('form.label_language')}
             </label>
             <select
               value={language}
               onChange={(e) => setLanguage(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border-2 border-orange-200 text-base focus:outline-none focus:border-orange-400 bg-white"
+              className="w-full px-4 py-3 rounded-xl border-2 border-blue-200 text-base focus:outline-none focus:border-blue-400 bg-white"
             >
               {SUPPORTED_LANGUAGES.map((lang) => (
                 <option key={lang.code} value={lang.code}>
@@ -166,13 +166,13 @@ export default function RecipeForm({ recipeId, onBack, onSaved }) {
                 </option>
               ))}
             </select>
-            <p className="text-orange-400 text-xs mt-1">{t('form.language_hint')}</p>
+            <p className="text-blue-400 text-xs mt-1">{t('form.language_hint')}</p>
           </div>
         )}
 
         {/* Title */}
         <div>
-          <label className="block text-orange-700 font-bold mb-1 text-sm uppercase tracking-wide">
+          <label className="block text-blue-700 font-bold mb-1 text-sm uppercase tracking-wide">
             {t('form.label_name_required')}
           </label>
           <input
@@ -180,29 +180,29 @@ export default function RecipeForm({ recipeId, onBack, onSaved }) {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="e.g. Grandma's Apple Pie"
-            className="w-full px-4 py-3 rounded-xl border-2 border-orange-200 text-lg focus:outline-none focus:border-orange-400 bg-white"
+            className="w-full px-4 py-3 rounded-xl border-2 border-blue-200 text-lg focus:outline-none focus:border-blue-400 bg-white"
           />
           {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title}</p>}
         </div>
 
         {/* Ingredients */}
         <div>
-          <label className="block text-orange-700 font-bold mb-1 text-sm uppercase tracking-wide">
-            {t('form.label_ingredients')} <span className="normal-case font-normal text-orange-400">{t('form.ingredients_hint')}</span>
+          <label className="block text-blue-700 font-bold mb-1 text-sm uppercase tracking-wide">
+            {t('form.label_ingredients')} <span className="normal-case font-normal text-blue-400">{t('form.ingredients_hint')}</span>
           </label>
           <textarea
             value={ingredientsText}
             onChange={(e) => setIngredientsText(e.target.value)}
             placeholder={t('form.ingredients_placeholder')}
             rows={6}
-            className="w-full px-4 py-3 rounded-xl border-2 border-orange-200 text-base focus:outline-none focus:border-orange-400 bg-white resize-none"
+            className="w-full px-4 py-3 rounded-xl border-2 border-blue-200 text-base focus:outline-none focus:border-blue-400 bg-white resize-none"
           />
           {errors.ingredients && <p className="text-red-500 text-sm mt-1">{errors.ingredients}</p>}
         </div>
 
         {/* Instructions */}
         <div>
-          <label className="block text-orange-700 font-bold mb-1 text-sm uppercase tracking-wide">
+          <label className="block text-blue-700 font-bold mb-1 text-sm uppercase tracking-wide">
             {t('form.label_instructions')}
           </label>
           <textarea
@@ -210,28 +210,28 @@ export default function RecipeForm({ recipeId, onBack, onSaved }) {
             onChange={(e) => setInstructions(e.target.value)}
             placeholder="Step 1: Preheat oven to 350°F..."
             rows={8}
-            className="w-full px-4 py-3 rounded-xl border-2 border-orange-200 text-base focus:outline-none focus:border-orange-400 bg-white resize-none"
+            className="w-full px-4 py-3 rounded-xl border-2 border-blue-200 text-base focus:outline-none focus:border-blue-400 bg-white resize-none"
           />
         </div>
 
         {/* Notes */}
         <div>
-          <label className="block text-orange-700 font-bold mb-1 text-sm uppercase tracking-wide">
-            {t('form.label_notes')} <span className="normal-case font-normal text-orange-400">{t('form.optional_hint')}</span>
+          <label className="block text-blue-700 font-bold mb-1 text-sm uppercase tracking-wide">
+            {t('form.label_notes')} <span className="normal-case font-normal text-blue-400">{t('form.optional_hint')}</span>
           </label>
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             placeholder="Tips, substitutions, family memories..."
             rows={3}
-            className="w-full px-4 py-3 rounded-xl border-2 border-orange-200 text-base focus:outline-none focus:border-orange-400 bg-white resize-none"
+            className="w-full px-4 py-3 rounded-xl border-2 border-blue-200 text-base focus:outline-none focus:border-blue-400 bg-white resize-none"
           />
         </div>
 
         {/* Photo */}
         <div>
-          <label className="block text-orange-700 font-bold mb-1 text-sm uppercase tracking-wide">
-            {t('form.label_photo')} <span className="normal-case font-normal text-orange-400">{t('form.optional_hint')}</span>
+          <label className="block text-blue-700 font-bold mb-1 text-sm uppercase tracking-wide">
+            {t('form.label_photo')} <span className="normal-case font-normal text-blue-400">{t('form.optional_hint')}</span>
           </label>
           {photo ? (
             <div className="relative">
@@ -245,9 +245,9 @@ export default function RecipeForm({ recipeId, onBack, onSaved }) {
               </button>
             </div>
           ) : (
-            <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-orange-200 rounded-xl cursor-pointer bg-white hover:bg-orange-50">
+            <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-blue-200 rounded-xl cursor-pointer bg-white hover:bg-blue-50">
               <span className="text-3xl">📷</span>
-              <span className="text-orange-400 text-sm mt-1">{t('form.photo_tap')}</span>
+              <span className="text-blue-400 text-sm mt-1">{t('form.photo_tap')}</span>
               <input
                 type="file"
                 accept="image/*"
@@ -273,7 +273,7 @@ export default function RecipeForm({ recipeId, onBack, onSaved }) {
           onClick={handleSave}
           disabled={saving}
           className="w-full py-4 rounded-xl text-white text-lg font-semibold disabled:opacity-60"
-          style={{ backgroundColor: '#f97316' }}
+          style={{ backgroundColor: '#3b82f6' }}
         >
           {saving ? t('form.saving') : isEdit ? t('form.save_edit') : t('form.save_new')}
         </button>

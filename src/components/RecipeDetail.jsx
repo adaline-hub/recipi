@@ -25,8 +25,8 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
 
   if (!recipe) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#fffbeb' }}>
-        <p className="text-orange-400 text-lg">{t('detail.loading')}</p>
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#f0f9ff' }}>
+        <p className="text-blue-400 text-lg">{t('detail.loading')}</p>
       </div>
     );
   }
@@ -49,10 +49,10 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
   const translationCount = Object.keys(translations).filter((l) => l !== recipe.language).length;
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#fffbeb' }}>
+    <div className="min-h-screen" style={{ backgroundColor: '#f0f9ff' }}>
       {/* Header */}
-      <div style={{ backgroundColor: '#f97316' }} className="px-4 pt-10 pb-6">
-        <button onClick={onBack} className="text-orange-100 text-sm mb-3 flex items-center gap-1">
+      <div style={{ backgroundColor: '#3b82f6' }} className="px-4 pt-10 pb-6">
+        <button onClick={onBack} className="text-blue-100 text-sm mb-3 flex items-center gap-1">
           {t('detail.back')}
         </button>
         <h1 className="text-2xl font-bold text-white leading-tight">{displayTitle}</h1>
@@ -60,20 +60,20 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
         {/* Language badge row */}
         <div className="flex items-center gap-2 mt-2 flex-wrap">
           {/* Original language tag */}
-          <span className="bg-orange-600 text-orange-100 text-xs px-2 py-0.5 rounded-full">
+          <span className="bg-blue-600 text-blue-100 text-xs px-2 py-0.5 rounded-full">
             {t('detail.original_language', { lang: originalLangLabel })}
           </span>
 
           {/* "Viewing in X" tag when showing a translation */}
           {isTranslated && (
-            <span className="bg-white text-orange-600 text-xs px-2 py-0.5 rounded-full font-medium">
+            <span className="bg-white text-blue-600 text-xs px-2 py-0.5 rounded-full font-medium">
               {t('detail.viewing_translation', { lang: currentLangLabel })}
             </span>
           )}
 
           {/* Translation count badge */}
           {translationCount > 0 && (
-            <span className="bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full">
+            <span className="bg-blue-500 text-white text-xs px-2 py-0.5 rounded-full">
               {t('detail.translation_count', { count: translationCount })}
             </span>
           )}
@@ -92,18 +92,18 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
 
         {/* Translation notice when viewing original but a translation exists for another language */}
         {!isTranslated && !isOriginalLang && (
-          <div className="bg-orange-50 border border-orange-200 rounded-xl px-4 py-3 text-sm text-orange-600">
+          <div className="bg-blue-50 border border-blue-200 rounded-xl px-4 py-3 text-sm text-blue-600">
             {t('detail.showing_original_notice', { lang: originalLangLabel })}
           </div>
         )}
 
         {/* Ingredients */}
         <section>
-          <h2 className="text-lg font-bold text-orange-700 mb-3 uppercase tracking-wide">{t('detail.ingredients')}</h2>
+          <h2 className="text-lg font-bold text-blue-700 mb-3 uppercase tracking-wide">{t('detail.ingredients')}</h2>
           <ul className="space-y-2">
             {displayIngredients.map((ing, i) => (
               <li key={i} className="flex items-start gap-2 text-gray-800 text-base">
-                <span className="text-orange-400 mt-1">•</span>
+                <span className="text-blue-400 mt-1">•</span>
                 <span>{ing}</span>
               </li>
             ))}
@@ -113,7 +113,7 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
         {/* Instructions */}
         {displayInstructions && (
           <section>
-            <h2 className="text-lg font-bold text-orange-700 mb-3 uppercase tracking-wide">{t('detail.instructions')}</h2>
+            <h2 className="text-lg font-bold text-blue-700 mb-3 uppercase tracking-wide">{t('detail.instructions')}</h2>
             <p className="text-gray-800 text-base leading-relaxed whitespace-pre-wrap">{displayInstructions}</p>
           </section>
         )}
@@ -121,7 +121,7 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
         {/* Notes */}
         {displayNotes && (
           <section>
-            <h2 className="text-lg font-bold text-orange-700 mb-3 uppercase tracking-wide">{t('detail.notes')}</h2>
+            <h2 className="text-lg font-bold text-blue-700 mb-3 uppercase tracking-wide">{t('detail.notes')}</h2>
             <p className="text-gray-600 text-base leading-relaxed whitespace-pre-wrap">{displayNotes}</p>
           </section>
         )}
@@ -131,7 +131,7 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
           <button
             onClick={() => onEdit(recipe.id)}
             className="w-full py-4 rounded-xl text-white text-lg font-semibold"
-            style={{ backgroundColor: '#f97316' }}
+            style={{ backgroundColor: '#3b82f6' }}
           >
             {t('detail.edit')}
           </button>
@@ -139,7 +139,7 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
           {/* Add / Edit Translation button */}
           <button
             onClick={() => setShowTranslationModal(true)}
-            className="w-full py-4 rounded-xl border-2 border-orange-300 text-orange-600 text-lg font-semibold bg-white"
+            className="w-full py-4 rounded-xl border-2 border-blue-300 text-blue-600 text-lg font-semibold bg-white"
           >
             🌐 {translationCount > 0 ? t('detail.manage_translations') : t('detail.add_translation')}
           </button>

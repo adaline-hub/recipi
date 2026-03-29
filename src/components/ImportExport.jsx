@@ -43,10 +43,10 @@ export default function ImportExport({ onBack }) {
   }
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#fffbeb' }}>
+    <div className="min-h-screen" style={{ backgroundColor: '#f0f9ff' }}>
       {/* Header */}
-      <div style={{ backgroundColor: '#f97316' }} className="px-4 pt-10 pb-6">
-        <button onClick={onBack} className="text-orange-100 text-sm mb-3">
+      <div style={{ backgroundColor: '#3b82f6' }} className="px-4 pt-10 pb-6">
+        <button onClick={onBack} className="text-blue-100 text-sm mb-3">
           {t('importexport.back')}
         </button>
         <h1 className="text-2xl font-bold text-white">{t('importexport.title')}</h1>
@@ -54,21 +54,21 @@ export default function ImportExport({ onBack }) {
 
       <div className="px-4 py-6 space-y-4">
         {/* Export */}
-        <div className="bg-white rounded-2xl p-5 border border-orange-100 shadow-sm">
+        <div className="bg-white rounded-2xl p-5 border border-blue-100 shadow-sm">
           <h2 className="text-lg font-bold text-gray-800 mb-1">📤 {t('importexport.export_button')}</h2>
           <p className="text-gray-500 text-sm mb-4">{t('importexport.export_hint')}</p>
           <button
             onClick={handleExport}
             disabled={exporting}
             className="w-full py-4 rounded-xl text-white text-base font-semibold disabled:opacity-60"
-            style={{ backgroundColor: '#f97316' }}
+            style={{ backgroundColor: '#3b82f6' }}
           >
             {exporting ? '…' : t('importexport.export_button')}
           </button>
         </div>
 
         {/* Import */}
-        <div className="bg-white rounded-2xl p-5 border border-orange-100 shadow-sm">
+        <div className="bg-white rounded-2xl p-5 border border-blue-100 shadow-sm">
           <h2 className="text-lg font-bold text-gray-800 mb-1">📥 {t('importexport.import_button')}</h2>
           <p className="text-gray-500 text-sm mb-4">{t('importexport.import_hint')}</p>
           <input
@@ -81,8 +81,8 @@ export default function ImportExport({ onBack }) {
           />
           <label
             htmlFor="import-file"
-            className={`block w-full py-4 rounded-xl text-center text-base font-semibold cursor-pointer border-2 border-orange-300 text-orange-600 ${
-              importing ? 'opacity-60 pointer-events-none' : 'hover:bg-orange-50'
+            className={`block w-full py-4 rounded-xl text-center text-base font-semibold cursor-pointer border-2 border-blue-300 text-blue-600 ${
+              importing ? 'opacity-60 pointer-events-none' : 'hover:bg-blue-50'
             }`}
           >
             {importing ? '…' : t('importexport.import_button')}

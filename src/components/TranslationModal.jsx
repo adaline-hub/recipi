@@ -92,21 +92,21 @@ export default function TranslationModal({ recipe, onClose, onSaved }) {
     <div className="fixed inset-0 z-50 flex items-end justify-center" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
       <div
         className="w-full max-w-lg rounded-t-3xl overflow-y-auto"
-        style={{ backgroundColor: '#fffbeb', maxHeight: '90vh' }}
+        style={{ backgroundColor: '#f0f9ff', maxHeight: '90vh' }}
       >
         {/* Modal header */}
-        <div style={{ backgroundColor: '#f97316' }} className="px-4 pt-6 pb-5">
+        <div style={{ backgroundColor: '#3b82f6' }} className="px-4 pt-6 pb-5">
           <div className="flex items-center justify-between mb-1">
             <h2 className="text-xl font-bold text-white">{t('translation.modal_title')}</h2>
             <button
               onClick={onClose}
-              className="text-orange-100 text-2xl leading-none font-bold"
+              className="text-blue-100 text-2xl leading-none font-bold"
               aria-label="Close"
             >
               ✕
             </button>
           </div>
-          <p className="text-orange-100 text-sm">
+          <p className="text-blue-100 text-sm">
             {t('translation.modal_subtitle', { lang: originalLangLabel })}
           </p>
         </div>
@@ -114,13 +114,13 @@ export default function TranslationModal({ recipe, onClose, onSaved }) {
         <div className="px-4 py-5 space-y-5">
           {/* Target language selector */}
           <div>
-            <label className="block text-orange-700 font-bold mb-1 text-sm uppercase tracking-wide">
+            <label className="block text-blue-700 font-bold mb-1 text-sm uppercase tracking-wide">
               {t('translation.target_language')}
             </label>
             <select
               value={targetLang}
               onChange={(e) => handleLangChange(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border-2 border-orange-200 text-base focus:outline-none focus:border-orange-400 bg-white"
+              className="w-full px-4 py-3 rounded-xl border-2 border-blue-200 text-base focus:outline-none focus:border-blue-400 bg-white"
             >
               {SUPPORTED_LANGUAGES.filter((l) => l.code !== recipe.language).map((lang) => (
                 <option key={lang.code} value={lang.code}>
@@ -132,8 +132,8 @@ export default function TranslationModal({ recipe, onClose, onSaved }) {
           </div>
 
           {/* Reference: show original content */}
-          <div className="rounded-xl bg-orange-50 border border-orange-200 p-4 space-y-2">
-            <p className="text-orange-600 text-xs font-bold uppercase tracking-wide">
+          <div className="rounded-xl bg-blue-50 border border-blue-200 p-4 space-y-2">
+            <p className="text-blue-600 text-xs font-bold uppercase tracking-wide">
               {t('translation.original_label', { lang: originalLangLabel })}
             </p>
             <p className="text-gray-700 font-semibold">{recipe.title}</p>
@@ -142,55 +142,55 @@ export default function TranslationModal({ recipe, onClose, onSaved }) {
 
           {/* Title */}
           <div>
-            <label className="block text-orange-700 font-bold mb-1 text-sm uppercase tracking-wide">
+            <label className="block text-blue-700 font-bold mb-1 text-sm uppercase tracking-wide">
               {t('form.label_name_required')}
             </label>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border-2 border-orange-200 text-lg focus:outline-none focus:border-orange-400 bg-white"
+              className="w-full px-4 py-3 rounded-xl border-2 border-blue-200 text-lg focus:outline-none focus:border-blue-400 bg-white"
             />
             {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title}</p>}
           </div>
 
           {/* Ingredients */}
           <div>
-            <label className="block text-orange-700 font-bold mb-1 text-sm uppercase tracking-wide">
-              {t('form.label_ingredients')} <span className="normal-case font-normal text-orange-400">{t('form.ingredients_hint')}</span>
+            <label className="block text-blue-700 font-bold mb-1 text-sm uppercase tracking-wide">
+              {t('form.label_ingredients')} <span className="normal-case font-normal text-blue-400">{t('form.ingredients_hint')}</span>
             </label>
             <textarea
               value={ingredientsText}
               onChange={(e) => setIngredientsText(e.target.value)}
               rows={5}
-              className="w-full px-4 py-3 rounded-xl border-2 border-orange-200 text-base focus:outline-none focus:border-orange-400 bg-white resize-none"
+              className="w-full px-4 py-3 rounded-xl border-2 border-blue-200 text-base focus:outline-none focus:border-blue-400 bg-white resize-none"
             />
             {errors.ingredients && <p className="text-red-500 text-sm mt-1">{errors.ingredients}</p>}
           </div>
 
           {/* Instructions */}
           <div>
-            <label className="block text-orange-700 font-bold mb-1 text-sm uppercase tracking-wide">
+            <label className="block text-blue-700 font-bold mb-1 text-sm uppercase tracking-wide">
               {t('form.label_instructions')}
             </label>
             <textarea
               value={instructions}
               onChange={(e) => setInstructions(e.target.value)}
               rows={6}
-              className="w-full px-4 py-3 rounded-xl border-2 border-orange-200 text-base focus:outline-none focus:border-orange-400 bg-white resize-none"
+              className="w-full px-4 py-3 rounded-xl border-2 border-blue-200 text-base focus:outline-none focus:border-blue-400 bg-white resize-none"
             />
           </div>
 
           {/* Notes */}
           <div>
-            <label className="block text-orange-700 font-bold mb-1 text-sm uppercase tracking-wide">
-              {t('form.label_notes')} <span className="normal-case font-normal text-orange-400">{t('form.optional_hint')}</span>
+            <label className="block text-blue-700 font-bold mb-1 text-sm uppercase tracking-wide">
+              {t('form.label_notes')} <span className="normal-case font-normal text-blue-400">{t('form.optional_hint')}</span>
             </label>
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={3}
-              className="w-full px-4 py-3 rounded-xl border-2 border-orange-200 text-base focus:outline-none focus:border-orange-400 bg-white resize-none"
+              className="w-full px-4 py-3 rounded-xl border-2 border-blue-200 text-base focus:outline-none focus:border-blue-400 bg-white resize-none"
             />
           </div>
 
@@ -199,7 +199,7 @@ export default function TranslationModal({ recipe, onClose, onSaved }) {
             onClick={handleSave}
             disabled={saving}
             className="w-full py-4 rounded-xl text-white text-lg font-semibold disabled:opacity-60"
-            style={{ backgroundColor: '#f97316' }}
+            style={{ backgroundColor: '#3b82f6' }}
           >
             {saving ? t('form.saving') : t('translation.save_button', { lang: langLabel(targetLang) })}
           </button>
