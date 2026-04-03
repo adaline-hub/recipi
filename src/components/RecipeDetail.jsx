@@ -50,6 +50,9 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
 
   const originalLangLabel = LANGUAGE_LABELS[recipe.language] || recipe.language || 'English';
   const currentLangLabel = LANGUAGE_LABELS[currentLang] || currentLang;
+  
+  // Get translation metadata if available
+  const translationMetadata = isTranslated ? translatedContent : null;
 
   // Count available translations (excluding original language)
   const translationCount = Object.keys(translations).filter((l) => l !== recipe.language).length;
@@ -77,18 +80,36 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
         <h1 className="text-2xl font-bold text-white leading-tight">{displayTitle}</h1>
 
         {/* Creator and date info */}
-        {(recipe.createdBy || recipe.createdAt) && (
+        {isTranslated && translationMetadata ? (
+          // Show translation info when viewing a translation
           <div className="mt-2 text-blue-100 text-sm">
-            {recipe.createdBy && recipe.createdAt && (
-              <p>{t('detail.created_by_on', { creator: recipe.createdBy, date: formatDate(recipe.createdAt) })}</p>
+            {translationMetadata.translatedBy && translationMetadata.translatedDateFormatted && (
+              <p>
+                {t('detail.translated_by_on', {
+                  creator: translationMetadata.translatedBy,
+                  date: translationMetadata.translatedDateFormatted,
+                })}
+              </p>
             )}
-            {recipe.createdBy && !recipe.createdAt && (
-              <p>{t('detail.created_by', { creator: recipe.createdBy })}</p>
-            )}
-            {!recipe.createdBy && recipe.createdAt && (
-              <p>{t('detail.created_on', { date: formatDate(recipe.createdAt) })}</p>
+            {translationMetadata.isAutoTranslated && (
+              <p className="text-xs text-blue-200 mt-0.5">✨ Auto-translated</p>
             )}
           </div>
+        ) : (
+          // Show original recipe info
+          (recipe.createdBy || recipe.createdAt) && (
+            <div className="mt-2 text-blue-100 text-sm">
+              {recipe.createdBy && recipe.createdAt && (
+                <p>{t('detail.created_by_on', { creator: recipe.createdBy, date: formatDate(recipe.createdAt) })}</p>
+              )}
+              {recipe.createdBy && !recipe.createdAt && (
+                <p>{t('detail.created_by', { creator: recipe.createdBy })}</p>
+              )}
+              {!recipe.createdBy && recipe.createdAt && (
+                <p>{t('detail.created_on', { date: formatDate(recipe.createdAt) })}</p>
+              )}
+            </div>
+          )
         )}
 
         {/* Last modified */}

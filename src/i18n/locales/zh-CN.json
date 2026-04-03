@@ -34,7 +34,8 @@
     "created_by_on": "由{{creator}}在{{date}}创建",
     "created_by": "由{{creator}}创建",
     "created_on": "创建于{{date}}",
-    "last_modified": "最后修改：{{date}}"
+    "last_modified": "最后修改：{{date}}",
+    "translated_by_on": "由{{creator}}于{{date}}翻译"
   },
   "form": {
     "back": "← 返回",

@@ -34,7 +34,8 @@
     "created_by_on": "{{creator}}が{{date}}に作成",
     "created_by": "{{creator}}が作成",
     "created_on": "{{date}}に作成",
-    "last_modified": "最終変更：{{date}}"
+    "last_modified": "最終変更：{{date}}",
+    "translated_by_on": "{{creator}}が{{date}}に翻訳"
   },
   "form": {
     "back": "← 戻る",

@@ -34,7 +34,8 @@
     "created_by_on": "Created by {{creator}} on {{date}}",
     "created_by": "Created by {{creator}}",
     "created_on": "Created on {{date}}",
-    "last_modified": "Last modified: {{date}}"
+    "last_modified": "Last modified: {{date}}",
+    "translated_by_on": "Translated by {{creator}} on {{date}}"
   },
   "form": {
     "back": "← Back",
