@@ -1,16 +1,18 @@
 {
   "app": {
     "title": "Recipi 🍴",
-    "tagline": "Vos recettes de famille, toujours à portée"
+    "tagline": "Little Pan + Little B ❤️"
   },
   "list": {
     "search_placeholder": "Rechercher des recettes...",
+    "search_hint": "Recherche par {{scope}}",
     "add_button": "＋ Ajouter une recette",
     "loading": "Chargement…",
     "no_match": "Aucune recette ne correspond à « {{query}} »",
     "empty_title": "Pas encore de recettes !",
     "empty_hint": "Appuyez sur « Ajouter une recette » pour commencer.",
-    "import_export_link": "Importer / Exporter des recettes"
+    "import_export_link": "Importer / Exporter des recettes",
+    "by": "Par"
   },
   "detail": {
     "back": "← Retour",
@@ -28,7 +30,12 @@
     "translation_count": "{{count}} traduction(s)",
     "add_translation": "Ajouter une traduction",
     "manage_translations": "Gérer les traductions",
-    "showing_original_notice": "Pas de traduction disponible — affichage de l'original ({{lang}})"
+    "showing_original_notice": "Pas de traduction disponible — affichage de l'original ({{lang}})",
+    "created_by_on": "Créé par {{creator}} le {{date}}",
+    "created_by": "Créé par {{creator}}",
+    "created_on": "Créé le {{date}}",
+    "last_modified": "Dernière modification : {{date}}",
+    "translated_by_on": "Traduit par {{creator}} le {{date}}"
   },
   "form": {
     "back": "← Retour",
@@ -47,10 +54,14 @@
     "saving": "Enregistrement…",
     "error_title": "Le nom est requis.",
     "error_ingredients": "Au moins un ingrédient est requis.",
+    "error_created_by": "Veuillez sélectionner qui a créé cette recette.",
     "label_photo": "Photo",
     "photo_tap": "Appuyer pour ajouter une photo",
     "label_language": "Langue de la recette",
-    "language_hint": "La langue dans laquelle cette recette est rédigée"
+    "language_hint": "La langue dans laquelle cette recette est rédigée",
+    "label_created_by": "Créé par",
+    "created_by_placeholder": "p. ex. Maman, Grand-mère, ou votre nom",
+    "created_by_hint": "Qui a partagé cette recette ? (Nous nous en souviendrons)"
   },
   "importexport": {
     "title": "Importer / Exporter",

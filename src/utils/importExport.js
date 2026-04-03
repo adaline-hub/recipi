@@ -3,7 +3,7 @@ import { db } from '../db';
 export async function exportRecipes() {
   const recipes = await db.recipes.toArray();
   const data = {
-    version: 2,
+    version: 3,
     exportedAt: new Date().toISOString(),
     recipes,
   };
@@ -25,9 +25,9 @@ export async function importRecipes(file) {
       try {
         const raw = JSON.parse(e.target.result);
 
-        // Support both v1 (no language/translations) and v2 (with language/translations)
-        if (!raw || (raw.version !== 1 && raw.version !== 2) || !Array.isArray(raw.recipes)) {
-          return reject(new Error('Invalid file format: must have version 1 or 2 and a recipes array.'));
+        // Support v1, v2 (no createdBy), and v3 (with createdBy)
+        if (!raw || (raw.version !== 1 && raw.version !== 2 && raw.version !== 3) || !Array.isArray(raw.recipes)) {
+          return reject(new Error('Invalid file format: must have version 1, 2, or 3 and a recipes array.'));
         }
 
         let added = 0;
@@ -48,7 +48,7 @@ export async function importRecipes(file) {
             continue;
           }
 
-          // Normalize: v1 exports won't have language/translations — backfill defaults
+          // Normalize: v1/v2 exports won't have language/translations — backfill defaults
           const normalized = {
             ...r,
             language: r.language || 'en',
@@ -60,6 +60,8 @@ export async function importRecipes(file) {
                 notes: r.notes || '',
               },
             },
+            // Preserve createdBy if present, otherwise keep null
+            createdBy: r.createdBy || null,
           };
 
           const existing = await db.recipes.get(normalized.id);
@@ -70,7 +72,13 @@ export async function importRecipes(file) {
                 ...(existing.translations || {}),
                 ...(normalized.translations || {}),
               };
-              await db.recipes.put({ ...normalized, translations: mergedTranslations });
+              // When updating, preserve the original createdBy and createdAt
+              await db.recipes.put({
+                ...normalized,
+                translations: mergedTranslations,
+                createdBy: existing.createdBy, // Keep the original creator
+                createdAt: existing.createdAt, // Keep the original creation date
+              });
               updated++;
             } else {
               skipped++;

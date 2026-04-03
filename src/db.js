@@ -21,3 +21,9 @@ db.version(4).stores({
   // language field added: tracks the original language of the recipe (e.g. 'en', 'ja', 'fr', 'zh-CN')
   // translations field structure: { en: { title, ingredients[], instructions, notes }, ja: {...}, ... }
 });
+
+db.version(5).stores({
+  recipes: 'id, title, createdBy, language, createdAt, updatedAt'
+  // createdBy field added: string (person's name/initials)
+  // Allows searching recipes by creator
+});

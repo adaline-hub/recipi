@@ -1,16 +1,18 @@
 {
   "app": {
     "title": "Recipi 🍴",
-    "tagline": "家族食谱，随时在手"
+    "tagline": "Little Pan + Little B ❤️"
   },
   "list": {
     "search_placeholder": "搜索食谱...",
+    "search_hint": "按{{scope}}搜索",
     "add_button": "＋ 新增食谱",
     "loading": "加载中…",
     "no_match": "找不到符合「{{query}}」的食谱",
     "empty_title": "还没有食谱！",
     "empty_hint": "点击「新增食谱」开始使用。",
-    "import_export_link": "导入／导出食谱"
+    "import_export_link": "导入／导出食谱",
+    "by": "来自"
   },
   "detail": {
     "back": "← 返回",
@@ -28,7 +30,12 @@
     "translation_count": "{{count}} 个翻译",
     "add_translation": "添加翻译",
     "manage_translations": "管理翻译",
-    "showing_original_notice": "暂无翻译 — 显示原文（{{lang}}）"
+    "showing_original_notice": "暂无翻译 — 显示原文（{{lang}}）",
+    "created_by_on": "由{{creator}}在{{date}}创建",
+    "created_by": "由{{creator}}创建",
+    "created_on": "创建于{{date}}",
+    "last_modified": "最后修改：{{date}}",
+    "translated_by_on": "由{{creator}}于{{date}}翻译"
   },
   "form": {
     "back": "← 返回",
@@ -49,8 +56,12 @@
     "saving": "保存中…",
     "error_title": "食谱名称为必填。",
     "error_ingredients": "请至少输入一项食材。",
+    "error_created_by": "请选择谁创建了这个食谱。",
     "label_language": "食谱语言",
-    "language_hint": "该食谱所使用的语言"
+    "language_hint": "该食谱所使用的语言",
+    "label_created_by": "创建者",
+    "created_by_placeholder": "例如：妈妈、奶奶或你的名字",
+    "created_by_hint": "谁分享了这个食谱？（下次我们会记住）"
   },
   "importexport": {
     "title": "导入／导出",

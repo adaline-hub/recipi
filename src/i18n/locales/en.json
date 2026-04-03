@@ -1,16 +1,18 @@
 {
   "app": {
     "title": "Recipi 🍴",
-    "tagline": "Your family recipes, always close"
+    "tagline": "Little Pan + Little B ❤️"
   },
   "list": {
     "search_placeholder": "Search recipes...",
+    "search_hint": "Searching by {{scope}}",
     "add_button": "＋ Add Recipe",
     "loading": "Loading…",
     "no_match": "No recipes match \"{{query}}\"",
     "empty_title": "No recipes yet!",
     "empty_hint": "Tap \"Add Recipe\" to get started.",
-    "import_export_link": "Import / Export recipes"
+    "import_export_link": "Import / Export recipes",
+    "by": "By"
   },
   "detail": {
     "back": "← Back",
@@ -28,7 +30,12 @@
     "translation_count": "{{count}} translation(s)",
     "add_translation": "Add Translation",
     "manage_translations": "Manage Translations",
-    "showing_original_notice": "No translation available — showing original ({{lang}})"
+    "showing_original_notice": "No translation available — showing original ({{lang}})",
+    "created_by_on": "Created by {{creator}} on {{date}}",
+    "created_by": "Created by {{creator}}",
+    "created_on": "Created on {{date}}",
+    "last_modified": "Last modified: {{date}}",
+    "translated_by_on": "Translated by {{creator}} on {{date}}"
   },
   "form": {
     "back": "← Back",
@@ -47,10 +54,14 @@
     "saving": "Saving…",
     "error_title": "Title is required.",
     "error_ingredients": "At least one ingredient is required.",
+    "error_created_by": "Please select who created this recipe.",
     "label_photo": "Photo",
     "photo_tap": "Tap to add a photo",
     "label_language": "Recipe Language",
-    "language_hint": "The language this recipe is written in"
+    "language_hint": "The language this recipe is written in",
+    "label_created_by": "Created by",
+    "created_by_placeholder": "e.g. Mom, Grandma, or your name",
+    "created_by_hint": "Who shared this recipe? (We'll remember your choice)"
   },
   "importexport": {
     "title": "Import / Export",

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRecipe } from '../hooks/useRecipes';
 import { db } from '../db';
-import TranslationModal from './TranslationModal';
+import { deleteRecipeFromSupabase } from '../lib/supabaseSync';
 
 const LANGUAGE_LABELS = {
   en: 'English',
@@ -11,16 +11,102 @@ const LANGUAGE_LABELS = {
   'zh-CN': '中文（简体）',
 };
 
+const SUPPORTED_LANGUAGES = [
+  { code: 'en', label: 'English' },
+  { code: 'fr', label: 'Français' },
+  { code: 'ja', label: '日本語' },
+  { code: 'zh-CN', label: '中文（简体）' },
+];
+
 export default function RecipeDetail({ recipeId, onBack, onEdit }) {
   const recipe = useRecipe(recipeId);
   const [confirming, setConfirming] = useState(false);
-  const [showTranslationModal, setShowTranslationModal] = useState(false);
+  const [showTranslateForm, setShowTranslateForm] = useState(false);
+  const [translateLang, setTranslateLang] = useState('en');
+  const [translateTitle, setTranslateTitle] = useState('');
+  const [translateIngredientsText, setTranslateIngredientsText] = useState('');
+  const [translateInstructions, setTranslateInstructions] = useState('');
+  const [translateNotes, setTranslateNotes] = useState('');
+  const [translateErrors, setTranslateErrors] = useState({});
+  const [saving, setSaving] = useState(false);
   const { t, i18n } = useTranslation();
   const currentLang = i18n.language;
 
   async function handleDelete() {
+    // Delete from local db first
     await db.recipes.delete(recipeId);
+    
+    // Also delete from Supabase
+    await deleteRecipeFromSupabase(recipeId);
+    
     onBack();
+  }
+
+  function openTranslateForm() {
+    // Pre-select a language that doesn't already have a translation
+    const existingTranslations = recipe.translations || {};
+    const availableLangs = SUPPORTED_LANGUAGES.filter(
+      (l) => l.code !== recipe.language && !existingTranslations[l.code]
+    );
+    const defaultLang = availableLangs[0]?.code || 'en';
+    
+    setTranslateLang(defaultLang);
+    setTranslateTitle('');
+    setTranslateIngredientsText('');
+    setTranslateInstructions('');
+    setTranslateNotes('');
+    setTranslateErrors({});
+    setShowTranslateForm(true);
+  }
+
+  function validateTranslation() {
+    const errs = {};
+    if (!translateTitle.trim()) errs.title = t('form.error_title');
+    const ings = translateIngredientsText.split('\n').map((s) => s.trim()).filter(Boolean);
+    if (ings.length === 0) errs.ingredients = t('form.error_ingredients');
+    return errs;
+  }
+
+  async function handleSaveTranslation() {
+    const errs = validateTranslation();
+    if (Object.keys(errs).length > 0) {
+      setTranslateErrors(errs);
+      return;
+    }
+    setTranslateErrors({});
+    setSaving(true);
+
+    try {
+      const ingredients = translateIngredientsText.split('\n').map((s) => s.trim()).filter(Boolean);
+      
+      // Format current date
+      const now = new Date();
+      const dateStr = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      
+      const existingTranslations = recipe.translations || {};
+      const updatedTranslations = {
+        ...existingTranslations,
+        [translateLang]: {
+          title: translateTitle.trim(),
+          ingredients,
+          instructions: translateInstructions.trim(),
+          notes: translateNotes.trim(),
+          translatedBy: recipe.createdBy || 'Unknown',
+          translatedDate: Date.now(),
+          translatedDateFormatted: dateStr,
+          isAutoTranslated: false, // Manual translation
+        },
+      };
+
+      await db.recipes.update(recipe.id, {
+        translations: updatedTranslations,
+        updatedAt: Date.now(),
+      });
+
+      setShowTranslateForm(false);
+    } finally {
+      setSaving(false);
+    }
   }
 
   if (!recipe) {
@@ -44,9 +130,25 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
 
   const originalLangLabel = LANGUAGE_LABELS[recipe.language] || recipe.language || 'English';
   const currentLangLabel = LANGUAGE_LABELS[currentLang] || currentLang;
+  
+  // Get translation metadata if available
+  const translationMetadata = isTranslated ? translatedContent : null;
 
   // Count available translations (excluding original language)
   const translationCount = Object.keys(translations).filter((l) => l !== recipe.language).length;
+
+  // Format dates
+  function formatDate(timestamp) {
+    if (!timestamp) return '';
+    const date = new Date(timestamp);
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+
+  function formatDateTime(timestamp) {
+    if (!timestamp) return '';
+    const date = new Date(timestamp);
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' });
+  }
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#f0f9ff' }}>
@@ -57,8 +159,48 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
         </button>
         <h1 className="text-2xl font-bold text-white leading-tight">{displayTitle}</h1>
 
+        {/* Creator and date info */}
+        {isTranslated && translationMetadata ? (
+          // Show translation info when viewing a translation
+          <div className="mt-2 text-blue-100 text-sm">
+            {translationMetadata.translatedBy && translationMetadata.translatedDateFormatted && (
+              <p>
+                {t('detail.translated_by_on', {
+                  creator: translationMetadata.translatedBy,
+                  date: translationMetadata.translatedDateFormatted,
+                })}
+              </p>
+            )}
+            {translationMetadata.isAutoTranslated && (
+              <p className="text-xs text-blue-200 mt-0.5">✨ Auto-translated</p>
+            )}
+          </div>
+        ) : (
+          // Show original recipe info
+          (recipe.createdBy || recipe.createdAt) && (
+            <div className="mt-2 text-blue-100 text-sm">
+              {recipe.createdBy && recipe.createdAt && (
+                <p>{t('detail.created_by_on', { creator: recipe.createdBy, date: formatDate(recipe.createdAt) })}</p>
+              )}
+              {recipe.createdBy && !recipe.createdAt && (
+                <p>{t('detail.created_by', { creator: recipe.createdBy })}</p>
+              )}
+              {!recipe.createdBy && recipe.createdAt && (
+                <p>{t('detail.created_on', { date: formatDate(recipe.createdAt) })}</p>
+              )}
+            </div>
+          )
+        )}
+
+        {/* Last modified */}
+        {recipe.updatedAt && recipe.updatedAt !== recipe.createdAt && (
+          <div className="mt-1 text-blue-200 text-xs">
+            {t('detail.last_modified', { date: formatDateTime(recipe.updatedAt) })}
+          </div>
+        )}
+
         {/* Language badge row */}
-        <div className="flex items-center gap-2 mt-2 flex-wrap">
+        <div className="flex items-center gap-2 mt-3 flex-wrap">
           {/* Original language tag */}
           <span className="bg-blue-600 text-blue-100 text-xs px-2 py-0.5 rounded-full">
             {t('detail.original_language', { lang: originalLangLabel })}
@@ -136,12 +278,12 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
             {t('detail.edit')}
           </button>
 
-          {/* Add / Edit Translation button */}
+          {/* Translate button */}
           <button
-            onClick={() => setShowTranslationModal(true)}
+            onClick={openTranslateForm}
             className="w-full py-4 rounded-xl border-2 border-blue-300 text-blue-600 text-lg font-semibold bg-white"
           >
-            🌐 {translationCount > 0 ? t('detail.manage_translations') : t('detail.add_translation')}
+            🌐 {t('detail.translate_to', { lang: LANGUAGE_LABELS[currentLang] })}
           </button>
 
           {!confirming ? (

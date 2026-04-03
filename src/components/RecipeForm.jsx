@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { db } from '../db';
 import { useRecipe } from '../hooks/useRecipes';
 import { resizeAndEncode } from '../utils/imageUtils';
+import { saveRecipeToSupabase } from '../lib/supabaseSync';
 
 const SUPPORTED_LANGUAGES = [
   { code: 'en', label: 'English' },
@@ -22,6 +23,10 @@ export default function RecipeForm({ recipeId, onBack, onSaved }) {
   const [notes, setNotes] = useState('');
   const [photo, setPhoto] = useState(null);
   const [language, setLanguage] = useState(currentAppLang);
+  const [createdBy, setCreatedBy] = useState(() => {
+    // Load the last used creator name from localStorage, default to "Little B"
+    return localStorage.getItem('lastCreatedBy') || 'Little B';
+  });
   const [errors, setErrors] = useState({});
   const [saving, setSaving] = useState(false);
 
@@ -48,6 +53,10 @@ export default function RecipeForm({ recipeId, onBack, onSaved }) {
 
       setPhoto(existing.photo || null);
       setLanguage(existing.language || 'en');
+      // When editing, preserve the original createdBy (don't let them change it)
+      if (existing.createdBy) {
+        setCreatedBy(existing.createdBy);
+      }
     }
   }, [existing, currentAppLang]);
 
@@ -56,6 +65,7 @@ export default function RecipeForm({ recipeId, onBack, onSaved }) {
     if (!title.trim()) errs.title = t('form.error_title');
     const ings = ingredientsText.split('\n').map((s) => s.trim()).filter(Boolean);
     if (ings.length === 0) errs.ingredients = t('form.error_ingredients');
+    if (!createdBy) errs.createdBy = t('form.error_created_by');
     return errs;
   }
 
@@ -94,6 +104,7 @@ export default function RecipeForm({ recipeId, onBack, onSaved }) {
           translations: updatedTranslations,
           photo: photo || null,
           updatedAt: now,
+          // Don't change createdBy or createdAt when editing
         };
 
         if (currentAppLang === originalLang) {
@@ -104,6 +115,11 @@ export default function RecipeForm({ recipeId, onBack, onSaved }) {
         }
 
         await db.recipes.update(recipeId, updatePayload);
+        
+        // Sync to Supabase
+        const updatedRecipe = await db.recipes.get(recipeId);
+        await saveRecipeToSupabase(updatedRecipe);
+        
         onSaved(recipeId);
       } else {
         const id = crypto.randomUUID();
@@ -117,7 +133,12 @@ export default function RecipeForm({ recipeId, onBack, onSaved }) {
           },
         };
 
-        await db.recipes.add({
+        // Save the last used creator name
+        if (createdBy.trim()) {
+          localStorage.setItem('lastCreatedBy', createdBy.trim());
+        }
+
+        const newRecipe = {
           id,
           title: title.trim(),
           ingredients,
@@ -126,9 +147,16 @@ export default function RecipeForm({ recipeId, onBack, onSaved }) {
           photo: photo || null,
           language,
           translations,
+          createdBy: createdBy.trim() || null,
           createdAt: now,
           updatedAt: now,
-        });
+        };
+
+        await db.recipes.add(newRecipe);
+        
+        // Sync to Supabase
+        await saveRecipeToSupabase(newRecipe);
+        
         onSaved(id);
       }
     } finally {
@@ -167,6 +195,33 @@ export default function RecipeForm({ recipeId, onBack, onSaved }) {
               ))}
             </select>
             <p className="text-blue-400 text-xs mt-1">{t('form.language_hint')}</p>
+          </div>
+        )}
+
+        {/* Created by (only shown when creating a new recipe) */}
+        {!isEdit && (
+          <div>
+            <label className="block text-blue-700 font-bold mb-2 text-sm uppercase tracking-wide">
+              {t('form.label_created_by')} <span className="text-red-500">*</span>
+            </label>
+            <div className="space-y-2">
+              {['Little Pan', 'Little B'].map((option) => (
+                <label key={option} className="flex items-center p-3 rounded-xl border-2 border-blue-200 bg-white cursor-pointer hover:bg-blue-50 transition-colors"
+                  style={{ borderColor: createdBy === option ? '#3b82f6' : '#bfdbfe', backgroundColor: createdBy === option ? '#eff6ff' : '#ffffff' }}>
+                  <input
+                    type="radio"
+                    name="createdBy"
+                    value={option}
+                    checked={createdBy === option}
+                    onChange={(e) => setCreatedBy(e.target.value)}
+                    className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500 cursor-pointer"
+                  />
+                  <span className="ml-3 text-base text-gray-800">{option}</span>
+                </label>
+              ))}
+            </div>
+            {errors.createdBy && <p className="text-red-500 text-sm mt-1">{errors.createdBy}</p>}
+            <p className="text-blue-400 text-xs mt-2">{t('form.created_by_hint')}</p>
           </div>
         )}
 

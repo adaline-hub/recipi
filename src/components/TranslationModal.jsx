@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { db } from '../db';
+import { translateText } from '../utils/translate';
 
 const SUPPORTED_LANGUAGES = [
   { code: 'en', label: 'English' },
@@ -26,9 +27,11 @@ export default function TranslationModal({ recipe, onClose, onSaved }) {
   const [notes, setNotes] = useState('');
   const [errors, setErrors] = useState({});
   const [saving, setSaving] = useState(false);
+  const [translating, setTranslating] = useState(false);
+  const [translationAttempted, setTranslationAttempted] = useState(false);
 
-  // When target language changes, pre-fill from existing translation if available
-  function handleLangChange(lang) {
+  // When target language changes, pre-fill from existing translation or trigger auto-translate
+  async function handleLangChange(lang) {
     setTargetLang(lang);
     const existing = existingTranslations[lang];
     if (existing) {
@@ -36,13 +39,90 @@ export default function TranslationModal({ recipe, onClose, onSaved }) {
       setIngredientsText((existing.ingredients || []).join('\n'));
       setInstructions(existing.instructions || '');
       setNotes(existing.notes || '');
+      setTranslationAttempted(true);
     } else {
+      // Clear fields and try auto-translate
       setTitle('');
       setIngredientsText('');
       setInstructions('');
       setNotes('');
+      setTranslationAttempted(false);
+      await autoTranslate(lang);
     }
     setErrors({});
+  }
+
+  // Auto-translate recipe content
+  async function autoTranslate(targetLanguage) {
+    setTranslating(true);
+    try {
+      const sourceLang = recipe.language || 'en';
+      
+      // Map language codes to Google Translate language codes
+      const langMap = {
+        'en': 'en',
+        'fr': 'fr',
+        'ja': 'ja',
+        'zh-CN': 'zh-CN',
+      };
+
+      const source = langMap[sourceLang] || 'en';
+      const target = langMap[targetLanguage] || targetLanguage;
+
+      // Translate title
+      let translatedTitle = '';
+      try {
+        translatedTitle = await translateText(recipe.title, source, target);
+      } catch (err) {
+        console.warn('Failed to translate title:', err);
+        translatedTitle = recipe.title;
+      }
+
+      // Translate ingredients
+      let translatedIngredients = [];
+      try {
+        translatedIngredients = await Promise.all(
+          recipe.ingredients.map((ing) => translateText(ing, source, target))
+        );
+      } catch (err) {
+        console.warn('Failed to translate ingredients:', err);
+        translatedIngredients = recipe.ingredients;
+      }
+
+      // Translate instructions
+      let translatedInstructions = '';
+      if (recipe.instructions) {
+        try {
+          translatedInstructions = await translateText(recipe.instructions, source, target);
+        } catch (err) {
+          console.warn('Failed to translate instructions:', err);
+          translatedInstructions = recipe.instructions;
+        }
+      }
+
+      // Translate notes
+      let translatedNotes = '';
+      if (recipe.notes) {
+        try {
+          translatedNotes = await translateText(recipe.notes, source, target);
+        } catch (err) {
+          console.warn('Failed to translate notes:', err);
+          translatedNotes = recipe.notes;
+        }
+      }
+
+      setTitle(translatedTitle);
+      setIngredientsText(translatedIngredients.join('\n'));
+      setInstructions(translatedInstructions);
+      setNotes(translatedNotes);
+      setTranslationAttempted(true);
+    } catch (err) {
+      console.error('Auto-translation failed:', err);
+      // Silently fail - user can enter manually
+      setTranslationAttempted(false);
+    } finally {
+      setTranslating(false);
+    }
   }
 
   function validate() {
@@ -64,6 +144,11 @@ export default function TranslationModal({ recipe, onClose, onSaved }) {
 
     try {
       const ingredients = ingredientsText.split('\n').map((s) => s.trim()).filter(Boolean);
+      
+      // Format current date
+      const now = new Date();
+      const dateStr = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      
       const updatedTranslations = {
         ...existingTranslations,
         [targetLang]: {
@@ -71,6 +156,11 @@ export default function TranslationModal({ recipe, onClose, onSaved }) {
           ingredients,
           instructions: instructions.trim(),
           notes: notes.trim(),
+          // Store metadata about the translation
+          translatedBy: recipe.createdBy || 'Unknown', // Original recipe creator
+          translatedDate: Date.now(),
+          translatedDateFormatted: dateStr,
+          isAutoTranslated: translationAttempted,
         },
       };
 
@@ -117,18 +207,31 @@ export default function TranslationModal({ recipe, onClose, onSaved }) {
             <label className="block text-blue-700 font-bold mb-1 text-sm uppercase tracking-wide">
               {t('translation.target_language')}
             </label>
-            <select
-              value={targetLang}
-              onChange={(e) => handleLangChange(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border-2 border-blue-200 text-base focus:outline-none focus:border-blue-400 bg-white"
-            >
-              {SUPPORTED_LANGUAGES.filter((l) => l.code !== recipe.language).map((lang) => (
-                <option key={lang.code} value={lang.code}>
-                  {lang.label}
-                  {existingTranslations[lang.code] ? ` ✓` : ''}
-                </option>
-              ))}
-            </select>
+            <div className="flex gap-2">
+              <select
+                value={targetLang}
+                onChange={(e) => handleLangChange(e.target.value)}
+                disabled={translating}
+                className="flex-1 px-4 py-3 rounded-xl border-2 border-blue-200 text-base focus:outline-none focus:border-blue-400 bg-white disabled:opacity-50"
+              >
+                {SUPPORTED_LANGUAGES.filter((l) => l.code !== recipe.language).map((lang) => (
+                  <option key={lang.code} value={lang.code}>
+                    {lang.label}
+                    {existingTranslations[lang.code] ? ` ✓` : ''}
+                  </option>
+                ))}
+              </select>
+              {!existingTranslations[targetLang] && (
+                <button
+                  onClick={() => autoTranslate(targetLang)}
+                  disabled={translating}
+                  className="px-4 py-3 rounded-xl bg-green-500 text-white font-semibold text-sm disabled:opacity-50 whitespace-nowrap"
+                  title="Auto-translate using AI"
+                >
+                  {translating ? '🔄' : '✨ Auto'}
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Reference: show original content */}
