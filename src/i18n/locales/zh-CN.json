@@ -55,6 +55,7 @@
     "saving": "保存中…",
     "error_title": "食谱名称为必填。",
     "error_ingredients": "请至少输入一项食材。",
+    "error_created_by": "请选择谁创建了这个食谱。",
     "label_language": "食谱语言",
     "language_hint": "该食谱所使用的语言",
     "label_created_by": "创建者",

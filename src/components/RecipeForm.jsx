@@ -23,8 +23,8 @@ export default function RecipeForm({ recipeId, onBack, onSaved }) {
   const [photo, setPhoto] = useState(null);
   const [language, setLanguage] = useState(currentAppLang);
   const [createdBy, setCreatedBy] = useState(() => {
-    // Load the last used creator name from localStorage
-    return localStorage.getItem('lastCreatedBy') || '';
+    // Load the last used creator name from localStorage, default to "Little B"
+    return localStorage.getItem('lastCreatedBy') || 'Little B';
   });
   const [errors, setErrors] = useState({});
   const [saving, setSaving] = useState(false);
@@ -64,6 +64,7 @@ export default function RecipeForm({ recipeId, onBack, onSaved }) {
     if (!title.trim()) errs.title = t('form.error_title');
     const ings = ingredientsText.split('\n').map((s) => s.trim()).filter(Boolean);
     if (ings.length === 0) errs.ingredients = t('form.error_ingredients');
+    if (!createdBy) errs.createdBy = t('form.error_created_by');
     return errs;
   }
 
@@ -188,17 +189,27 @@ export default function RecipeForm({ recipeId, onBack, onSaved }) {
         {/* Created by (only shown when creating a new recipe) */}
         {!isEdit && (
           <div>
-            <label className="block text-blue-700 font-bold mb-1 text-sm uppercase tracking-wide">
-              {t('form.label_created_by')} <span className="normal-case font-normal text-blue-400">{t('form.optional_hint')}</span>
+            <label className="block text-blue-700 font-bold mb-2 text-sm uppercase tracking-wide">
+              {t('form.label_created_by')} <span className="text-red-500">*</span>
             </label>
-            <input
-              type="text"
-              value={createdBy}
-              onChange={(e) => setCreatedBy(e.target.value)}
-              placeholder={t('form.created_by_placeholder')}
-              className="w-full px-4 py-3 rounded-xl border-2 border-blue-200 text-base focus:outline-none focus:border-blue-400 bg-white"
-            />
-            <p className="text-blue-400 text-xs mt-1">{t('form.created_by_hint')}</p>
+            <div className="space-y-2">
+              {['Little Pan', 'Little B'].map((option) => (
+                <label key={option} className="flex items-center p-3 rounded-xl border-2 border-blue-200 bg-white cursor-pointer hover:bg-blue-50 transition-colors"
+                  style={{ borderColor: createdBy === option ? '#3b82f6' : '#bfdbfe', backgroundColor: createdBy === option ? '#eff6ff' : '#ffffff' }}>
+                  <input
+                    type="radio"
+                    name="createdBy"
+                    value={option}
+                    checked={createdBy === option}
+                    onChange={(e) => setCreatedBy(e.target.value)}
+                    className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500 cursor-pointer"
+                  />
+                  <span className="ml-3 text-base text-gray-800">{option}</span>
+                </label>
+              ))}
+            </div>
+            {errors.createdBy && <p className="text-red-500 text-sm mt-1">{errors.createdBy}</p>}
+            <p className="text-blue-400 text-xs mt-2">{t('form.created_by_hint')}</p>
           </div>
         )}
 

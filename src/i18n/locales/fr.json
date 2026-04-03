@@ -53,6 +53,7 @@
     "saving": "Enregistrement…",
     "error_title": "Le nom est requis.",
     "error_ingredients": "Au moins un ingrédient est requis.",
+    "error_created_by": "Veuillez sélectionner qui a créé cette recette.",
     "label_photo": "Photo",
     "photo_tap": "Appuyer pour ajouter une photo",
     "label_language": "Langue de la recette",

@@ -53,6 +53,7 @@
     "saving": "保存中…",
     "error_title": "レシピ名は必須です。",
     "error_ingredients": "材料を少なくとも1つ入力してください。",
+    "error_created_by": "このレシピを作成した人を選択してください。",
     "label_photo": "写真",
     "photo_tap": "タップして写真を追加",
     "label_language": "レシピの言語",
