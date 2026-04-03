@@ -22,6 +22,10 @@ export default function RecipeForm({ recipeId, onBack, onSaved }) {
   const [notes, setNotes] = useState('');
   const [photo, setPhoto] = useState(null);
   const [language, setLanguage] = useState(currentAppLang);
+  const [createdBy, setCreatedBy] = useState(() => {
+    // Load the last used creator name from localStorage
+    return localStorage.getItem('lastCreatedBy') || '';
+  });
   const [errors, setErrors] = useState({});
   const [saving, setSaving] = useState(false);
 
@@ -48,6 +52,10 @@ export default function RecipeForm({ recipeId, onBack, onSaved }) {
 
       setPhoto(existing.photo || null);
       setLanguage(existing.language || 'en');
+      // When editing, preserve the original createdBy (don't let them change it)
+      if (existing.createdBy) {
+        setCreatedBy(existing.createdBy);
+      }
     }
   }, [existing, currentAppLang]);
 
@@ -94,6 +102,7 @@ export default function RecipeForm({ recipeId, onBack, onSaved }) {
           translations: updatedTranslations,
           photo: photo || null,
           updatedAt: now,
+          // Don't change createdBy or createdAt when editing
         };
 
         if (currentAppLang === originalLang) {
@@ -117,6 +126,11 @@ export default function RecipeForm({ recipeId, onBack, onSaved }) {
           },
         };
 
+        // Save the last used creator name
+        if (createdBy.trim()) {
+          localStorage.setItem('lastCreatedBy', createdBy.trim());
+        }
+
         await db.recipes.add({
           id,
           title: title.trim(),
@@ -126,6 +140,7 @@ export default function RecipeForm({ recipeId, onBack, onSaved }) {
           photo: photo || null,
           language,
           translations,
+          createdBy: createdBy.trim() || null,
           createdAt: now,
           updatedAt: now,
         });
@@ -167,6 +182,23 @@ export default function RecipeForm({ recipeId, onBack, onSaved }) {
               ))}
             </select>
             <p className="text-blue-400 text-xs mt-1">{t('form.language_hint')}</p>
+          </div>
+        )}
+
+        {/* Created by (only shown when creating a new recipe) */}
+        {!isEdit && (
+          <div>
+            <label className="block text-blue-700 font-bold mb-1 text-sm uppercase tracking-wide">
+              {t('form.label_created_by')} <span className="normal-case font-normal text-blue-400">{t('form.optional_hint')}</span>
+            </label>
+            <input
+              type="text"
+              value={createdBy}
+              onChange={(e) => setCreatedBy(e.target.value)}
+              placeholder={t('form.created_by_placeholder')}
+              className="w-full px-4 py-3 rounded-xl border-2 border-blue-200 text-base focus:outline-none focus:border-blue-400 bg-white"
+            />
+            <p className="text-blue-400 text-xs mt-1">{t('form.created_by_hint')}</p>
           </div>
         )}
 

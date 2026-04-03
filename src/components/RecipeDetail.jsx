@@ -48,6 +48,19 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
   // Count available translations (excluding original language)
   const translationCount = Object.keys(translations).filter((l) => l !== recipe.language).length;
 
+  // Format dates
+  function formatDate(timestamp) {
+    if (!timestamp) return '';
+    const date = new Date(timestamp);
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+
+  function formatDateTime(timestamp) {
+    if (!timestamp) return '';
+    const date = new Date(timestamp);
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' });
+  }
+
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#f0f9ff' }}>
       {/* Header */}
@@ -57,8 +70,30 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
         </button>
         <h1 className="text-2xl font-bold text-white leading-tight">{displayTitle}</h1>
 
+        {/* Creator and date info */}
+        {(recipe.createdBy || recipe.createdAt) && (
+          <div className="mt-2 text-blue-100 text-sm">
+            {recipe.createdBy && recipe.createdAt && (
+              <p>{t('detail.created_by_on', { creator: recipe.createdBy, date: formatDate(recipe.createdAt) })}</p>
+            )}
+            {recipe.createdBy && !recipe.createdAt && (
+              <p>{t('detail.created_by', { creator: recipe.createdBy })}</p>
+            )}
+            {!recipe.createdBy && recipe.createdAt && (
+              <p>{t('detail.created_on', { date: formatDate(recipe.createdAt) })}</p>
+            )}
+          </div>
+        )}
+
+        {/* Last modified */}
+        {recipe.updatedAt && recipe.updatedAt !== recipe.createdAt && (
+          <div className="mt-1 text-blue-200 text-xs">
+            {t('detail.last_modified', { date: formatDateTime(recipe.updatedAt) })}
+          </div>
+        )}
+
         {/* Language badge row */}
-        <div className="flex items-center gap-2 mt-2 flex-wrap">
+        <div className="flex items-center gap-2 mt-3 flex-wrap">
           {/* Original language tag */}
           <span className="bg-blue-600 text-blue-100 text-xs px-2 py-0.5 rounded-full">
             {t('detail.original_language', { lang: originalLangLabel })}

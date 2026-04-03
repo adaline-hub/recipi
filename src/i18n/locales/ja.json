@@ -5,12 +5,14 @@
   },
   "list": {
     "search_placeholder": "レシピを検索...",
+    "search_hint": "{{scope}}で検索中",
     "add_button": "＋ レシピを追加",
     "loading": "読み込み中…",
     "no_match": "「{{query}}」に一致するレシピはありません",
     "empty_title": "レシピがまだありません！",
     "empty_hint": "「レシピを追加」をタップして始めましょう。",
-    "import_export_link": "インポート／エクスポート"
+    "import_export_link": "インポート／エクスポート",
+    "by": "提供者"
   },
   "detail": {
     "back": "← 戻る",
@@ -28,7 +30,11 @@
     "translation_count": "翻訳 {{count}} 件",
     "add_translation": "翻訳を追加",
     "manage_translations": "翻訳を管理",
-    "showing_original_notice": "翻訳がありません — 原文を表示中（{{lang}}）"
+    "showing_original_notice": "翻訳がありません — 原文を表示中（{{lang}}）",
+    "created_by_on": "{{creator}}が{{date}}に作成",
+    "created_by": "{{creator}}が作成",
+    "created_on": "{{date}}に作成",
+    "last_modified": "最終変更：{{date}}"
   },
   "form": {
     "back": "← 戻る",
@@ -50,7 +56,10 @@
     "label_photo": "写真",
     "photo_tap": "タップして写真を追加",
     "label_language": "レシピの言語",
-    "language_hint": "このレシピが書かれている言語"
+    "language_hint": "このレシピが書かれている言語",
+    "label_created_by": "作成者",
+    "created_by_placeholder": "例：ママ、おばあちゃん、またはあなたの名前",
+    "created_by_hint": "このレシピを教えてくれた人は？（次回から覚えます）"
   },
   "importexport": {
     "title": "インポート／エクスポート",

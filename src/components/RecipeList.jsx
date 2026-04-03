@@ -8,9 +8,19 @@ export default function RecipeList({ onSelectRecipe, onAddRecipe, onImportExport
   const [search, setSearch] = useState('');
   const { t } = useTranslation();
 
-  const filtered = (recipes || []).filter((r) =>
-    r.title.toLowerCase().includes(search.toLowerCase())
-  );
+  const filtered = (recipes || []).filter((r) => {
+    const searchLower = search.toLowerCase();
+    const titleMatch = r.title.toLowerCase().includes(searchLower);
+    const creatorMatch = r.createdBy && r.createdBy.toLowerCase().includes(searchLower);
+    const ingredientMatch = r.ingredients.some((ing) => ing.toLowerCase().includes(searchLower));
+    return titleMatch || creatorMatch || ingredientMatch;
+  });
+
+  function formatDate(timestamp) {
+    if (!timestamp) return '';
+    const date = new Date(timestamp);
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  }
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#f0f9ff' }}>
@@ -43,6 +53,11 @@ export default function RecipeList({ onSelectRecipe, onAddRecipe, onImportExport
           onChange={(e) => setSearch(e.target.value)}
           className="w-full px-4 py-3 rounded-xl border-2 border-blue-200 text-lg focus:outline-none focus:border-blue-400 bg-white"
         />
+        {search && (
+          <p className="text-blue-400 text-xs px-2">
+            {t('list.search_hint', { scope: 'title, creator, or ingredients' })}
+          </p>
+        )}
 
         {/* Add button */}
         <button
@@ -77,13 +92,27 @@ export default function RecipeList({ onSelectRecipe, onAddRecipe, onImportExport
                 className="w-full text-left bg-white rounded-2xl p-4 shadow-sm border border-blue-100 active:bg-blue-50 flex items-center gap-3"
               >
                 <div className="flex-1 min-w-0">
-                  <h2 className="text-xl font-bold text-gray-800 mb-1">{recipe.title}</h2>
-                  {recipe.ingredients.length > 0 && (
-                    <p className="text-gray-500 text-sm truncate">
-                      {recipe.ingredients.slice(0, 2).join(' · ')}
-                      {recipe.ingredients.length > 2 && ` · +${recipe.ingredients.length - 2} more`}
-                    </p>
-                  )}
+                  <div className="flex items-center gap-2 mb-1">
+                    <h2 className="text-xl font-bold text-gray-800">{recipe.title}</h2>
+                    {recipe.createdBy && (
+                      <span className="bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded-full font-medium flex-shrink-0">
+                        {t('list.by')} {recipe.createdBy}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex items-center justify-between gap-2 mb-1">
+                    {recipe.ingredients.length > 0 && (
+                      <p className="text-gray-500 text-sm truncate flex-1">
+                        {recipe.ingredients.slice(0, 2).join(' · ')}
+                        {recipe.ingredients.length > 2 && ` · +${recipe.ingredients.length - 2} more`}
+                      </p>
+                    )}
+                    {recipe.createdAt && (
+                      <p className="text-gray-400 text-xs flex-shrink-0 whitespace-nowrap">
+                        {formatDate(recipe.createdAt)}
+                      </p>
+                    )}
+                  </div>
                 </div>
                 {recipe.photo && (
                   <img
