@@ -315,13 +315,102 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
         </div>
       </div>
 
-      {/* Translation Modal */}
-      {showTranslationModal && (
-        <TranslationModal
-          recipe={recipe}
-          onClose={() => setShowTranslationModal(false)}
-          onSaved={() => setShowTranslationModal(false)}
-        />
+      {/* Translation Form Modal */}
+      {showTranslateForm && (
+        <div className="fixed inset-0 bg-black/50 flex items-end z-50">
+          <div className="bg-white w-full rounded-t-2xl p-4 space-y-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold text-blue-700">{t('detail.translate_to', { lang: LANGUAGE_LABELS[translateLang] })}</h2>
+              <button onClick={() => setShowTranslateForm(false)} className="text-gray-400 text-2xl">×</button>
+            </div>
+
+            {/* Language selector */}
+            <div>
+              <label className="block text-blue-700 font-bold mb-1 text-sm uppercase tracking-wide">
+                {t('form.label_language')}
+              </label>
+              <select
+                value={translateLang}
+                onChange={(e) => setTranslateLang(e.target.value)}
+                className="w-full px-4 py-3 rounded-xl border-2 border-blue-200 text-base focus:outline-none focus:border-blue-400 bg-white"
+              >
+                {SUPPORTED_LANGUAGES.filter((l) => l.code !== recipe.language && !(recipe.translations || {})[l.code]).map((lang) => (
+                  <option key={lang.code} value={lang.code}>
+                    {lang.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Title */}
+            <div>
+              <label className="block text-blue-700 font-bold mb-1 text-sm uppercase tracking-wide">
+                {t('form.label_name_required')}
+              </label>
+              <input
+                type="text"
+                value={translateTitle}
+                onChange={(e) => setTranslateTitle(e.target.value)}
+                placeholder={recipe.title}
+                className="w-full px-4 py-3 rounded-xl border-2 border-blue-200 text-base focus:outline-none focus:border-blue-400 bg-white"
+              />
+              {translateErrors.title && <p className="text-red-500 text-sm mt-1">{translateErrors.title}</p>}
+            </div>
+
+            {/* Ingredients */}
+            <div>
+              <label className="block text-blue-700 font-bold mb-1 text-sm uppercase tracking-wide">
+                {t('form.label_ingredients')}
+              </label>
+              <textarea
+                value={translateIngredientsText}
+                onChange={(e) => setTranslateIngredientsText(e.target.value)}
+                placeholder={recipe.ingredients.join('\n')}
+                rows={6}
+                className="w-full px-4 py-3 rounded-xl border-2 border-blue-200 text-base focus:outline-none focus:border-blue-400 bg-white resize-none"
+              />
+              {translateErrors.ingredients && <p className="text-red-500 text-sm mt-1">{translateErrors.ingredients}</p>}
+            </div>
+
+            {/* Instructions */}
+            <div>
+              <label className="block text-blue-700 font-bold mb-1 text-sm uppercase tracking-wide">
+                {t('form.label_instructions')}
+              </label>
+              <textarea
+                value={translateInstructions}
+                onChange={(e) => setTranslateInstructions(e.target.value)}
+                placeholder={recipe.instructions}
+                rows={6}
+                className="w-full px-4 py-3 rounded-xl border-2 border-blue-200 text-base focus:outline-none focus:border-blue-400 bg-white resize-none"
+              />
+            </div>
+
+            {/* Notes */}
+            <div>
+              <label className="block text-blue-700 font-bold mb-1 text-sm uppercase tracking-wide">
+                {t('form.label_notes')}
+              </label>
+              <textarea
+                value={translateNotes}
+                onChange={(e) => setTranslateNotes(e.target.value)}
+                placeholder={recipe.notes || ''}
+                rows={3}
+                className="w-full px-4 py-3 rounded-xl border-2 border-blue-200 text-base focus:outline-none focus:border-blue-400 bg-white resize-none"
+              />
+            </div>
+
+            {/* Save button */}
+            <button
+              onClick={handleSaveTranslation}
+              disabled={saving}
+              className="w-full py-4 rounded-xl text-white text-lg font-semibold disabled:opacity-60"
+              style={{ backgroundColor: '#3b82f6' }}
+            >
+              {saving ? t('form.saving') : t('form.save_new')}
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );
