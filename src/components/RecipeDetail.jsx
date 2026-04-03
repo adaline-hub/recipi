@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useRecipe } from '../hooks/useRecipes';
 import { db } from '../db';
 import TranslationModal from './TranslationModal';
+import { deleteRecipeFromSupabase } from '../lib/supabaseSync';
 
 const LANGUAGE_LABELS = {
   en: 'English',
@@ -19,7 +20,12 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
   const currentLang = i18n.language;
 
   async function handleDelete() {
+    // Delete from local db first
     await db.recipes.delete(recipeId);
+    
+    // Also delete from Supabase
+    await deleteRecipeFromSupabase(recipeId);
+    
     onBack();
   }
 

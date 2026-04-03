@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRecipes } from '../hooks/useRecipes';
 import LanguageSwitcher from './LanguageSwitcher';
+import SyncStatus from './SyncStatus';
 
 export default function RecipeList({ onSelectRecipe, onAddRecipe, onImportExport }) {
   const recipes = useRecipes();
@@ -31,8 +32,9 @@ export default function RecipeList({ onSelectRecipe, onAddRecipe, onImportExport
             <h1 className="text-3xl font-bold text-white mb-1">{t('app.title')}</h1>
             <p className="text-blue-100 text-sm">{t('app.tagline')}</p>
           </div>
-          <div className="mt-1">
+          <div className="flex flex-col items-end gap-2 mt-1">
             <LanguageSwitcher />
+            <SyncStatus />
           </div>
         </div>
       </div>

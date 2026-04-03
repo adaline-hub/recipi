@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { db } from '../db';
 import { useRecipe } from '../hooks/useRecipes';
 import { resizeAndEncode } from '../utils/imageUtils';
+import { saveRecipeToSupabase } from '../lib/supabaseSync';
 
 const SUPPORTED_LANGUAGES = [
   { code: 'en', label: 'English' },
@@ -114,6 +115,11 @@ export default function RecipeForm({ recipeId, onBack, onSaved }) {
         }
 
         await db.recipes.update(recipeId, updatePayload);
+        
+        // Sync to Supabase
+        const updatedRecipe = await db.recipes.get(recipeId);
+        await saveRecipeToSupabase(updatedRecipe);
+        
         onSaved(recipeId);
       } else {
         const id = crypto.randomUUID();
@@ -132,7 +138,7 @@ export default function RecipeForm({ recipeId, onBack, onSaved }) {
           localStorage.setItem('lastCreatedBy', createdBy.trim());
         }
 
-        await db.recipes.add({
+        const newRecipe = {
           id,
           title: title.trim(),
           ingredients,
@@ -144,7 +150,13 @@ export default function RecipeForm({ recipeId, onBack, onSaved }) {
           createdBy: createdBy.trim() || null,
           createdAt: now,
           updatedAt: now,
-        });
+        };
+
+        await db.recipes.add(newRecipe);
+        
+        // Sync to Supabase
+        await saveRecipeToSupabase(newRecipe);
+        
         onSaved(id);
       }
     } finally {

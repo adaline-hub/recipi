@@ -1,13 +1,25 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import RecipeList from './components/RecipeList';
 import RecipeDetail from './components/RecipeDetail';
 import RecipeForm from './components/RecipeForm';
 import ImportExport from './components/ImportExport';
+import SyncStatus from './components/SyncStatus';
+import { fetchRecipesFromSupabase, subscribeToRecipeChanges, unsubscribeFromRecipeChanges } from './lib/supabaseSync';
 
 // Views: list | detail | add | edit | importexport
 export default function App() {
   const [view, setView] = useState('list');
   const [selectedRecipeId, setSelectedRecipeId] = useState(null);
+
+  // Initialize Supabase sync on app load
+  useEffect(() => {
+    fetchRecipesFromSupabase();
+    subscribeToRecipeChanges();
+
+    return () => {
+      unsubscribeFromRecipeChanges();
+    };
+  }, []);
 
   function showList() {
     setView('list');
