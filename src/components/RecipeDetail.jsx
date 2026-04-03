@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRecipe } from '../hooks/useRecipes';
 import { db } from '../db';
-import TranslationModal from './TranslationModal';
 import { deleteRecipeFromSupabase } from '../lib/supabaseSync';
 
 const LANGUAGE_LABELS = {
@@ -12,10 +11,24 @@ const LANGUAGE_LABELS = {
   'zh-CN': '中文（简体）',
 };
 
+const SUPPORTED_LANGUAGES = [
+  { code: 'en', label: 'English' },
+  { code: 'fr', label: 'Français' },
+  { code: 'ja', label: '日本語' },
+  { code: 'zh-CN', label: '中文（简体）' },
+];
+
 export default function RecipeDetail({ recipeId, onBack, onEdit }) {
   const recipe = useRecipe(recipeId);
   const [confirming, setConfirming] = useState(false);
-  const [showTranslationModal, setShowTranslationModal] = useState(false);
+  const [showTranslateForm, setShowTranslateForm] = useState(false);
+  const [translateLang, setTranslateLang] = useState('en');
+  const [translateTitle, setTranslateTitle] = useState('');
+  const [translateIngredientsText, setTranslateIngredientsText] = useState('');
+  const [translateInstructions, setTranslateInstructions] = useState('');
+  const [translateNotes, setTranslateNotes] = useState('');
+  const [translateErrors, setTranslateErrors] = useState({});
+  const [saving, setSaving] = useState(false);
   const { t, i18n } = useTranslation();
   const currentLang = i18n.language;
 
@@ -27,6 +40,73 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
     await deleteRecipeFromSupabase(recipeId);
     
     onBack();
+  }
+
+  function openTranslateForm() {
+    // Pre-select a language that doesn't already have a translation
+    const existingTranslations = recipe.translations || {};
+    const availableLangs = SUPPORTED_LANGUAGES.filter(
+      (l) => l.code !== recipe.language && !existingTranslations[l.code]
+    );
+    const defaultLang = availableLangs[0]?.code || 'en';
+    
+    setTranslateLang(defaultLang);
+    setTranslateTitle('');
+    setTranslateIngredientsText('');
+    setTranslateInstructions('');
+    setTranslateNotes('');
+    setTranslateErrors({});
+    setShowTranslateForm(true);
+  }
+
+  function validateTranslation() {
+    const errs = {};
+    if (!translateTitle.trim()) errs.title = t('form.error_title');
+    const ings = translateIngredientsText.split('\n').map((s) => s.trim()).filter(Boolean);
+    if (ings.length === 0) errs.ingredients = t('form.error_ingredients');
+    return errs;
+  }
+
+  async function handleSaveTranslation() {
+    const errs = validateTranslation();
+    if (Object.keys(errs).length > 0) {
+      setTranslateErrors(errs);
+      return;
+    }
+    setTranslateErrors({});
+    setSaving(true);
+
+    try {
+      const ingredients = translateIngredientsText.split('\n').map((s) => s.trim()).filter(Boolean);
+      
+      // Format current date
+      const now = new Date();
+      const dateStr = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      
+      const existingTranslations = recipe.translations || {};
+      const updatedTranslations = {
+        ...existingTranslations,
+        [translateLang]: {
+          title: translateTitle.trim(),
+          ingredients,
+          instructions: translateInstructions.trim(),
+          notes: translateNotes.trim(),
+          translatedBy: recipe.createdBy || 'Unknown',
+          translatedDate: Date.now(),
+          translatedDateFormatted: dateStr,
+          isAutoTranslated: false, // Manual translation
+        },
+      };
+
+      await db.recipes.update(recipe.id, {
+        translations: updatedTranslations,
+        updatedAt: Date.now(),
+      });
+
+      setShowTranslateForm(false);
+    } finally {
+      setSaving(false);
+    }
   }
 
   if (!recipe) {
@@ -198,12 +278,12 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
             {t('detail.edit')}
           </button>
 
-          {/* Add / Edit Translation button */}
+          {/* Translate button */}
           <button
-            onClick={() => setShowTranslationModal(true)}
+            onClick={openTranslateForm}
             className="w-full py-4 rounded-xl border-2 border-blue-300 text-blue-600 text-lg font-semibold bg-white"
           >
-            🌐 {translationCount > 0 ? t('detail.manage_translations') : t('detail.add_translation')}
+            🌐 {t('detail.translate_to', { lang: LANGUAGE_LABELS[currentLang] })}
           </button>
 
           {!confirming ? (
