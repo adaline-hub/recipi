@@ -9,7 +9,7 @@ function generateSign(query, salt) {
   return CryptoJS.MD5(str).toString();
 }
 
-function mapLanguageToBaidu(langCode) {
+export function mapLanguageToBaidu(langCode) {
   const mapping = {
     'en': 'en',
     'fr': 'fr',
