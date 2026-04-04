@@ -305,8 +305,6 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
           )}
         </div>
       </div>
-
-      {/* Translation Form Modal */}
     </div>
   );
 }
