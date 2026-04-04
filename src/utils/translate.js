@@ -1,8 +1,8 @@
-import translate from 'translate-google';
+import { translateWithBaidu, isBaiduConfigured } from './baiduTranslate';
 
 /**
  * Translate text from source language to target language
- * Uses google-translate-api-free (no API key required)
+ * Uses Baidu Translate API (requires API credentials in .env.local)
  */
 export async function translateText(text, sourceLanguage, targetLanguage) {
   if (!text || text.trim().length === 0) {
@@ -14,15 +14,10 @@ export async function translateText(text, sourceLanguage, targetLanguage) {
     return text;
   }
 
-  try {
-    const result = await translate(text, {
-      from: sourceLanguage,
-      to: targetLanguage,
-    });
-    return result;
-  } catch (error) {
-    console.warn(`Translation from ${sourceLanguage} to ${targetLanguage} failed:`, error);
-    // Return original text if translation fails
+  if (!isBaiduConfigured()) {
+    console.warn('⚠️ Baidu Translate API not configured. Using original text.');
     return text;
   }
+
+  return translateWithBaidu(text, sourceLanguage, targetLanguage);
 }
