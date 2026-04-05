@@ -1,11 +1,15 @@
 import cloudbase from '@cloudbase/js-sdk';
 import { db } from '../db';
 
-// Initialize Tencent CloudBase
+const TCB_ENV = 'recipi-6gjlno6o87a7532b';
+const TCB_PUBLISHABLE_KEY = import.meta.env.VITE_TCB_PUBLISHABLE_KEY;
+
+// Initialize Tencent CloudBase with publishable key
 const app = cloudbase.init({
-  env: 'recipi-6gjlno6o87a7532b',
+  env: TCB_ENV,
 });
 
+const auth = app.auth({ publishableKey: TCB_PUBLISHABLE_KEY });
 const database = app.database();
 
 export const SYNC_STATUS = {
@@ -53,11 +57,11 @@ export async function fetchRecipesFromSupabase() {
   try {
     setSyncStatus(SYNC_STATUS.SYNCING);
 
-    // Try to authenticate anonymously (may fail if not enabled)
+    // Authenticate with publishable key
     try {
-      await app.auth().signInAnonymously();
+      await auth.signInAnonymously();
     } catch (authErr) {
-      console.warn('⚠️ Anonymous auth failed, continuing anyway:', authErr);
+      console.warn('⚠️ Auth failed:', authErr);
     }
 
     // Fetch all recipes from the 'recipes' collection
