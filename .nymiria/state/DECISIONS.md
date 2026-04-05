@@ -62,3 +62,15 @@ The CloudBase JS SDK uses CloudBase's **built-in document database**, not an ext
 **Let me try a different ap
 
 ---
+## 2026-04-05 — set it up now. Here's what to do:
+**Provider:** claude
+**Rationale:** (auto-detected)
+**Source:** Two important things from this log:
+
+**Good news:** Your recipes ARE loading — I can see 6 different recipe IDs in the logs. Sync is working!
+
+**Bad news:** You're still running the **old code** (`index-Czfqaz3B.js`). Our new code hasn't been picked up yet. Do a hard refresh:
+
+**Mac: Cmd + Shift + R
+
+---
