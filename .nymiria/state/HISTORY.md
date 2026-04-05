@@ -205,3 +205,9 @@
 **Decisions:** fix CORS in Tencent.** That's the immediate blocker. In your Tencent CloudBase c
 
 ---
+## 2026-04-05T11:09:57.252Z — claude
+**Summary:** Discussed: can you open tcb-translate.zip in the /tmp folder again?; api key settings?; Here?; Here?
+**Files Changed:** index-D9Hzi93o.js, Node.js, index-C737gf8f.js, index-DRtm8yeZ.js
+**Decisions:** fix CORS in Tencent.** That's the immediate blocker. In your Tencent CloudBase c
+
+---
