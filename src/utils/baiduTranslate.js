@@ -1,3 +1,18 @@
+import cloudbase from '@cloudbase/js-sdk';
+
+const TCB_ENV = 'recipi-6gjlno6o87a7532b';
+const TCB_PUBLISHABLE_KEY = import.meta.env.VITE_TCB_PUBLISHABLE_KEY;
+
+const app = cloudbase.init({ env: TCB_ENV, region: 'ap-singapore' });
+const auth = app.auth({ publishableKey: TCB_PUBLISHABLE_KEY });
+
+let authReady = false;
+async function ensureAuth() {
+  if (authReady) return;
+  await auth.signInAnonymously();
+  authReady = true;
+}
+
 // Language code mapping for Baidu
 export function mapLanguageToBaidu(langCode) {
   const mapping = {
@@ -10,12 +25,12 @@ export function mapLanguageToBaidu(langCode) {
 }
 
 export function isBaiduConfigured() {
-  return true; // Always available via the server-side proxy
+  return true;
 }
 
 /**
- * Translate text via Tencent CloudBase Cloud Function.
- * Works from both US and China (hosted on Tencent servers).
+ * Translate text via Tencent CloudBase callFunction (no CORS issues).
+ * Calls the 'translate' Regular Cloud Function using the SDK.
  */
 export async function translateWithBaidu(text, fromLang, toLang) {
   if (!text || text.trim().length === 0) return text;
@@ -26,16 +41,12 @@ export async function translateWithBaidu(text, fromLang, toLang) {
   if (from === to) return text;
 
   try {
-    const response = await fetch('https://recipi-6gjlno6o87a7532b.ap-singapore.app.tcloudbase.com/http/translate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text, from, to }),
+    await ensureAuth();
+    const result = await app.callFunction({
+      name: 'translate',
+      data: { text, from, to },
     });
-
-    if (!response.ok) return text;
-
-    const data = await response.json();
-    return data.translated || text;
+    return result?.result?.translated || text;
   } catch (error) {
     console.warn(`Translation from ${fromLang} to ${toLang} failed:`, error);
     return text;
