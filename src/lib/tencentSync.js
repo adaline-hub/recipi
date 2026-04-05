@@ -1,9 +1,15 @@
+import cloudbase from '@cloudbase/js-sdk';
 import { db } from '../db';
 
 const TCB_ENV = 'recipi-6gjlno6o87a7532b';
-const TCB_TOKEN = import.meta.env.VITE_TCB_PUBLISHABLE_KEY;
-// Singapore region endpoint (extracted from publishable key issuer)
-const TCB_BASE = `https://${TCB_ENV}.ap-shanghai.tcb-api.tencentcloudapi.com/web/v1`;
+const TCB_PUBLISHABLE_KEY = import.meta.env.VITE_TCB_PUBLISHABLE_KEY;
+
+const app = cloudbase.init({
+  env: TCB_ENV,
+  region: 'ap-singapore',
+});
+const auth = app.auth({ publishableKey: TCB_PUBLISHABLE_KEY });
+const database = app.database();
 
 export const SYNC_STATUS = {
   SYNCED: 'synced',
@@ -31,46 +37,27 @@ export function getSyncStatus() {
   return currentSyncStatus;
 }
 
-/**
- * Make authenticated HTTP request to Tencent CloudBase database API
- */
-async function tcbRequest(action, body) {
-  const res = await fetch(`${TCB_BASE}/database/${action}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${TCB_TOKEN}`,
-      'X-CloudBase-Env': TCB_ENV,
-    },
-    body: JSON.stringify({ env: TCB_ENV, ...body }),
-  });
+let authReady = false;
 
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`TCB API error ${res.status}: ${text}`);
-  }
-
-  return res.json();
+async function ensureAuth() {
+  if (authReady) return;
+  await auth.signInAnonymously();
+  authReady = true;
 }
 
-/**
- * Fetch all recipes from Tencent CloudBase on app load
- */
 export async function fetchRecipesFromSupabase() {
   try {
     setSyncStatus(SYNC_STATUS.SYNCING);
+    await ensureAuth();
 
-    const result = await tcbRequest('query', {
-      collection: 'recipes',
-      query: '{}',
-      limit: 200,
-    });
+    const { data } = await database.collection('recipes').get();
 
-    const records = result.data || [];
-    for (const recipe of records) {
-      const recipeData = { ...recipe, id: recipe.id || recipe._id };
-      delete recipeData._id;
-      await db.recipes.put(recipeData);
+    if (data && data.length > 0) {
+      for (const recipe of data) {
+        const recipeData = { ...recipe, id: recipe.id || recipe._id };
+        delete recipeData._id;
+        await db.recipes.put(recipeData);
+      }
     }
 
     setSyncStatus(SYNC_STATUS.SYNCED);
@@ -80,12 +67,10 @@ export async function fetchRecipesFromSupabase() {
   }
 }
 
-/**
- * Save a recipe to Tencent CloudBase
- */
 export async function saveRecipeToSupabase(recipe) {
   try {
     setSyncStatus(SYNC_STATUS.SYNCING);
+    await ensureAuth();
 
     const recipeData = {
       id: recipe.id,
@@ -101,20 +86,15 @@ export async function saveRecipeToSupabase(recipe) {
       updatedAt: recipe.updatedAt,
     };
 
-    // Try to update first, then insert if not found
-    try {
-      await tcbRequest('update', {
-        collection: 'recipes',
-        query: `{"id":"${recipe.id}"}`,
-        multi: false,
-        upsert: true,
-        data: `{"$set":${JSON.stringify(recipeData)}}`,
-      });
-    } catch {
-      await tcbRequest('add', {
-        collection: 'recipes',
-        data: JSON.stringify(recipeData),
-      });
+    const { data: existing } = await database
+      .collection('recipes')
+      .where({ id: recipe.id })
+      .get();
+
+    if (existing && existing.length > 0) {
+      await database.collection('recipes').doc(existing[0]._id).update(recipeData);
+    } else {
+      await database.collection('recipes').add(recipeData);
     }
 
     setSyncStatus(SYNC_STATUS.SYNCED);
@@ -126,18 +106,19 @@ export async function saveRecipeToSupabase(recipe) {
   }
 }
 
-/**
- * Delete a recipe from Tencent CloudBase
- */
 export async function deleteRecipeFromSupabase(recipeId) {
   try {
     setSyncStatus(SYNC_STATUS.SYNCING);
+    await ensureAuth();
 
-    await tcbRequest('delete', {
-      collection: 'recipes',
-      query: `{"id":"${recipeId}"}`,
-      multi: false,
-    });
+    const { data: existing } = await database
+      .collection('recipes')
+      .where({ id: recipeId })
+      .get();
+
+    if (existing && existing.length > 0) {
+      await database.collection('recipes').doc(existing[0]._id).remove();
+    }
 
     setSyncStatus(SYNC_STATUS.SYNCED);
     return true;
