@@ -348,3 +348,30 @@ Discussed: i dont see just database. i see relational database and docu…; did 
 - display fully translated
 
 ---
+
+## April 5, 2026
+
+Discussed: can you open tcb-translate.zip in the /tmp folder again?; api key settings?; Here?; Here?
+
+**Decisions:**
+- fix CORS in Tencent.** That's the immediate blocker. In your Tencent CloudBase c
+
+**Files touched:**
+- `index-D9Hzi93o.js`
+- `Node.js`
+- `index-C737gf8f.js`
+- `index-DRtm8yeZ.js`
+
+**Next steps:**
+- now be open in Finder or your default archive application. You can now drag it i
+- look like `https://service-xxx.tcb-api.tencentcloudapi.com/translate` or similar
+- update in the app code.
+- be something like `https://service-xxxx.tcb-api.tencentcloudapi.com`).
+- show translation API calls succeeding
+- display fully translated
+- sync and show translated content
+- verify it's correct.
+- be an **Access URL** or **Endpoint** field
+- find the real endpoint.
+
+---

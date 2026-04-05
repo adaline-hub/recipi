@@ -187,3 +187,9 @@
 **Decisions:** just test if the app can save.** Since sync was showing "synced" earlier, maybe, set it up now. Here's what to do:, fix CORS in Tencent.** That's the immediate blocker. In your Tencent CloudBase c
 
 ---
+## 2026-04-05T10:56:19.035Z — claude
+**Summary:** Discussed: can you open tcb-translate.zip in the /tmp folder again?; api key settings?; Here?; Here?
+**Files Changed:** index-D9Hzi93o.js, Node.js, index-C737gf8f.js, index-DRtm8yeZ.js
+**Decisions:** fix CORS in Tencent.** That's the immediate blocker. In your Tencent CloudBase c
+
+---
