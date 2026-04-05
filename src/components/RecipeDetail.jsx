@@ -1,10 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRecipe } from '../hooks/useRecipes';
 import { db } from '../db';
 import { deleteRecipeFromSupabase } from '../lib/tencentSync';
-import { translateText } from '../utils/translate';
-import { mapLanguageToBaidu } from '../utils/baiduTranslate';
 
 const LANGUAGE_LABELS = {
   en: 'English',
@@ -23,86 +21,8 @@ const SUPPORTED_LANGUAGES = [
 export default function RecipeDetail({ recipeId, onBack, onEdit }) {
   const recipe = useRecipe(recipeId);
   const [confirming, setConfirming] = useState(false);
-  const [autoTranslating, setAutoTranslating] = useState(false);
-  const [autoTranslations, setAutoTranslations] = useState({});
   const { t, i18n } = useTranslation();
   const currentLang = i18n.language;
-
-  // Auto-translate recipe when app language changes
-  useEffect(() => {
-    if (!recipe) return;
-
-    const translations = recipe.translations || {};
-    const translatedContent = translations[currentLang];
-    const isOriginalLang = currentLang === recipe.language;
-
-    console.log('🔍 RecipeDetail auto-translate check:', {
-      recipeId: recipe.id,
-      recipeLanguage: recipe.language,
-      currentLang,
-      isOriginalLang,
-      hasTranslatedContent: !!translatedContent,
-      hasAutoTranslation: !!autoTranslations[currentLang],
-    });
-
-    // If translation exists or it's the original language, don't auto-translate
-    if (translatedContent || isOriginalLang) {
-      console.log('✓ Skipping auto-translate (translation exists or original language)');
-      return;
-    }
-
-    // Check if we already auto-translated this
-    if (autoTranslations[currentLang]) {
-      console.log('✓ Skipping auto-translate (already in progress)');
-      return;
-    }
-
-    console.log('🚀 Starting auto-translation...');
-
-    // Auto-translate recipe to current language
-    async function autoTranslate() {
-      setAutoTranslating(true);
-      try {
-        const sourceLang = mapLanguageToBaidu(recipe.language || 'en');
-        const targetLang = mapLanguageToBaidu(currentLang);
-
-        console.log('📝 Translating:', { sourceLang, targetLang });
-
-        const translatedTitle = await translateText(recipe.title, sourceLang, targetLang);
-        console.log('✓ Title translated:', translatedTitle);
-
-        const translatedIngredients = await Promise.all(
-          recipe.ingredients.map((ing) => translateText(ing, sourceLang, targetLang))
-        );
-        console.log('✓ Ingredients translated:', translatedIngredients);
-
-        const translatedInstructions = recipe.instructions
-          ? await translateText(recipe.instructions, sourceLang, targetLang)
-          : '';
-        const translatedNotes = recipe.notes
-          ? await translateText(recipe.notes, sourceLang, targetLang)
-          : '';
-
-        console.log('✓ All translations complete, updating state');
-
-        setAutoTranslations((prev) => ({
-          ...prev,
-          [currentLang]: {
-            title: translatedTitle,
-            ingredients: translatedIngredients,
-            instructions: translatedInstructions,
-            notes: translatedNotes,
-          },
-        }));
-      } catch (err) {
-        console.error('❌ Auto-translation failed:', err);
-      } finally {
-        setAutoTranslating(false);
-      }
-    }
-
-    autoTranslate();
-  }, [recipe, currentLang]);
 
   async function handleDelete() {
     // Delete from local db first
@@ -123,18 +43,16 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
     );
   }
 
-  // Resolve displayed content: prefer saved translation, then auto-translation, then original
+  // Resolve displayed content: use stored translation if available, else original
   const translations = recipe.translations || {};
   const translatedContent = translations[currentLang];
-  const autoTranslated = autoTranslations[currentLang];
   const isTranslated = !!translatedContent && currentLang !== recipe.language;
-  const isAutoTranslated = !!autoTranslated && currentLang !== recipe.language;
   const isOriginalLang = currentLang === recipe.language;
 
-  const displayTitle = translatedContent?.title || autoTranslated?.title || recipe.title;
-  const displayIngredients = translatedContent?.ingredients || autoTranslated?.ingredients || recipe.ingredients;
-  const displayInstructions = translatedContent?.instructions ?? autoTranslated?.instructions ?? recipe.instructions;
-  const displayNotes = translatedContent?.notes ?? autoTranslated?.notes ?? recipe.notes;
+  const displayTitle = translatedContent?.title || recipe.title;
+  const displayIngredients = translatedContent?.ingredients || recipe.ingredients;
+  const displayInstructions = translatedContent?.instructions ?? recipe.instructions;
+  const displayNotes = translatedContent?.notes ?? recipe.notes;
 
   const originalLangLabel = LANGUAGE_LABELS[recipe.language] || recipe.language || 'English';
   const currentLangLabel = LANGUAGE_LABELS[currentLang] || currentLang;
@@ -183,11 +101,6 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
               <p className="text-xs text-blue-200 mt-0.5">✨ Auto-translated</p>
             )}
           </div>
-        ) : isAutoTranslated ? (
-          // Show auto-translation indicator
-          <div className="mt-2 text-blue-100 text-sm">
-            <p className="text-xs text-blue-200">🤖 Auto-translated</p>
-          </div>
         ) : (
           // Show original recipe info
           (recipe.createdBy || recipe.createdAt) && (
@@ -203,13 +116,6 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
               )}
             </div>
           )
-        )}
-
-        {/* Auto-translating indicator */}
-        {autoTranslating && (
-          <div className="mt-2 text-blue-200 text-xs">
-            🔄 Translating...
-          </div>
         )}
 
         {/* Last modified */}

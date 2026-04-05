@@ -4,6 +4,7 @@ import { db } from '../db';
 import { useRecipe } from '../hooks/useRecipes';
 import { resizeAndEncode } from '../utils/imageUtils';
 import { saveRecipeToSupabase } from '../lib/tencentSync';
+import { translateRecipeToAllLanguages } from '../utils/translateRecipe';
 
 const SUPPORTED_LANGUAGES = [
   { code: 'en', label: 'English' },
@@ -84,54 +85,57 @@ export default function RecipeForm({ recipeId, onBack, onSaved }) {
     try {
       if (isEdit) {
         const existingRecipe = await db.recipes.get(recipeId);
-        const existingTranslations = existingRecipe?.translations || {};
-
-        // Store the content for the current app language in translations
-        const updatedTranslations = {
-          ...existingTranslations,
-          [currentAppLang]: {
-            title: title.trim(),
-            ingredients,
-            instructions: instructions.trim(),
-            notes: notes.trim(),
-          },
-        };
-
-        // If editing in the original language, update top-level fields too
         const originalLang = existingRecipe?.language || language;
+
         const updatePayload = {
           language: originalLang,
-          translations: updatedTranslations,
           photo: photo || null,
           updatedAt: now,
           // Don't change createdBy or createdAt when editing
         };
 
+        // If editing in the original language, re-translate to all languages
         if (currentAppLang === originalLang) {
-          updatePayload.title = title.trim();
-          updatePayload.ingredients = ingredients;
-          updatePayload.instructions = instructions.trim();
-          updatePayload.notes = notes.trim();
-        }
-
-        await db.recipes.update(recipeId, updatePayload);
-        
-        // Sync to Supabase
-        const updatedRecipe = await db.recipes.get(recipeId);
-        await saveRecipeToSupabase(updatedRecipe);
-        
-        onSaved(recipeId);
-      } else {
-        const id = crypto.randomUUID();
-        // For new recipes, store in both top-level and translations[language]
-        const translations = {
-          [language]: {
+          const recipeToTranslate = {
+            id: recipeId,
             title: title.trim(),
             ingredients,
             instructions: instructions.trim(),
             notes: notes.trim(),
-          },
-        };
+          };
+          const translatedRecipe = await translateRecipeToAllLanguages(
+            recipeToTranslate,
+            originalLang
+          );
+
+          updatePayload.title = title.trim();
+          updatePayload.ingredients = ingredients;
+          updatePayload.instructions = instructions.trim();
+          updatePayload.notes = notes.trim();
+          updatePayload.translations = translatedRecipe.translations;
+        } else {
+          // If editing in a different language, just update that language's translation
+          const existingTranslations = existingRecipe?.translations || {};
+          updatePayload.translations = {
+            ...existingTranslations,
+            [currentAppLang]: {
+              title: title.trim(),
+              ingredients,
+              instructions: instructions.trim(),
+              notes: notes.trim(),
+            },
+          };
+        }
+
+        await db.recipes.update(recipeId, updatePayload);
+
+        // Sync to Tencent CloudBase
+        const updatedRecipe = await db.recipes.get(recipeId);
+        await saveRecipeToSupabase(updatedRecipe);
+
+        onSaved(recipeId);
+      } else {
+        const id = crypto.randomUUID();
 
         // Save the last used creator name
         if (createdBy.trim()) {
@@ -146,17 +150,19 @@ export default function RecipeForm({ recipeId, onBack, onSaved }) {
           notes: notes.trim(),
           photo: photo || null,
           language,
-          translations,
           createdBy: createdBy.trim() || null,
           createdAt: now,
           updatedAt: now,
         };
 
-        await db.recipes.add(newRecipe);
-        
-        // Sync to Supabase
-        await saveRecipeToSupabase(newRecipe);
-        
+        // Translate to all languages and store translations
+        const translatedRecipe = await translateRecipeToAllLanguages(newRecipe, language);
+
+        await db.recipes.add(translatedRecipe);
+
+        // Sync to Tencent CloudBase
+        await saveRecipeToSupabase(translatedRecipe);
+
         onSaved(id);
       }
     } finally {

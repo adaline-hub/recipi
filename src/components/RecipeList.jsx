@@ -2,8 +2,6 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRecipes } from '../hooks/useRecipes';
 import SyncStatus from './SyncStatus';
-import { translateText } from '../utils/translate';
-import { mapLanguageToBaidu } from '../utils/baiduTranslate';
 
 export default function RecipeList({ onSelectRecipe, onAddRecipe, onImportExport }) {
   const recipes = useRecipes();
@@ -12,40 +10,22 @@ export default function RecipeList({ onSelectRecipe, onAddRecipe, onImportExport
   const { t, i18n } = useTranslation();
   const currentLang = i18n.language;
 
-  // Auto-translate recipe titles when language changes
+  // Show translated recipe titles from stored translations
   useEffect(() => {
     if (!recipes || recipes.length === 0) return;
 
-    async function translateTitles() {
-      const newTitles = {};
-      for (const recipe of recipes) {
-        const originalLang = recipe.language || 'en';
-        if (currentLang === originalLang) {
-          newTitles[recipe.id] = recipe.title;
-          continue;
-        }
-        // Check saved translation first
-        const saved = recipe.translations?.[currentLang];
-        if (saved?.title) {
-          newTitles[recipe.id] = saved.title;
-          continue;
-        }
-        // Auto-translate
-        try {
-          const translated = await translateText(
-            recipe.title,
-            mapLanguageToBaidu(originalLang),
-            mapLanguageToBaidu(currentLang)
-          );
-          newTitles[recipe.id] = translated;
-        } catch {
-          newTitles[recipe.id] = recipe.title;
-        }
+    const newTitles = {};
+    for (const recipe of recipes) {
+      const originalLang = recipe.language || 'en';
+      if (currentLang === originalLang) {
+        newTitles[recipe.id] = recipe.title;
+        continue;
       }
-      setTranslatedTitles(newTitles);
+      // Use saved translation if available
+      const saved = recipe.translations?.[currentLang];
+      newTitles[recipe.id] = saved?.title || recipe.title;
     }
-
-    translateTitles();
+    setTranslatedTitles(newTitles);
   }, [recipes, currentLang]);
 
   const filtered = (recipes || []).filter((r) => {
