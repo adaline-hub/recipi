@@ -53,8 +53,12 @@ export async function fetchRecipesFromSupabase() {
   try {
     setSyncStatus(SYNC_STATUS.SYNCING);
 
-    // Authenticate anonymously
-    await app.auth().signInAnonymously();
+    // Try to authenticate anonymously (may fail if not enabled)
+    try {
+      await app.auth().signInAnonymously();
+    } catch (authErr) {
+      console.warn('⚠️ Anonymous auth failed, continuing anyway:', authErr);
+    }
 
     // Fetch all recipes from the 'recipes' collection
     const { data } = await database.collection('recipes').get();
@@ -153,33 +157,11 @@ export async function deleteRecipeFromSupabase(recipeId) {
 
 /**
  * Subscribe to real-time changes from Tencent CloudBase
+ * Note: Real-time requires additional configuration in Tencent CloudBase console
+ * For now, we skip it and rely on page refresh for sync
  */
 export function subscribeToRecipeChanges() {
-  try {
-    subscription = database
-      .collection('recipes')
-      .on('change', async (snapshot) => {
-        console.log('📡 Real-time update received');
-
-        try {
-          const docs = snapshot.docs || [];
-          for (const doc of docs) {
-            const recipe = {
-              ...doc.data(),
-              id: doc.data().id || doc._id,
-            };
-            await db.recipes.put(recipe);
-          }
-        } catch (err) {
-          console.error('Error handling real-time update:', err);
-        }
-      });
-
-    return subscription;
-  } catch (err) {
-    console.error('Error subscribing to changes:', err);
-    return null;
-  }
+  return null;
 }
 
 /**
