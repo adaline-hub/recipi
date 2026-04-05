@@ -74,3 +74,14 @@ The CloudBase JS SDK uses CloudBase's **built-in document database**, not an ext
 **Mac: Cmd + Shift + R
 
 ---
+## 2026-04-05 — fix CORS in Tencent.** That's the immediate blocker. In your Tencent CloudBase c
+**Provider:** claude
+**Rationale:** (auto-detected)
+**Source:** Good questions. Let me clarify both:
+
+**1. To update the function code:**
+In the Tencent console, look for an **"Edit"** or **"Modify"** button on the translate function. You should be able to upload a new zip without deleting. If you can't find it, yes, you'd need to delete and recreate.
+
+**2. For 
+
+---
