@@ -36,15 +36,28 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
     const translatedContent = translations[currentLang];
     const isOriginalLang = currentLang === recipe.language;
 
+    console.log('🔍 RecipeDetail auto-translate check:', {
+      recipeId: recipe.id,
+      recipeLanguage: recipe.language,
+      currentLang,
+      isOriginalLang,
+      hasTranslatedContent: !!translatedContent,
+      hasAutoTranslation: !!autoTranslations[currentLang],
+    });
+
     // If translation exists or it's the original language, don't auto-translate
     if (translatedContent || isOriginalLang) {
+      console.log('✓ Skipping auto-translate (translation exists or original language)');
       return;
     }
 
     // Check if we already auto-translated this
     if (autoTranslations[currentLang]) {
+      console.log('✓ Skipping auto-translate (already in progress)');
       return;
     }
+
+    console.log('🚀 Starting auto-translation...');
 
     // Auto-translate recipe to current language
     async function autoTranslate() {
@@ -53,16 +66,24 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
         const sourceLang = mapLanguageToBaidu(recipe.language || 'en');
         const targetLang = mapLanguageToBaidu(currentLang);
 
+        console.log('📝 Translating:', { sourceLang, targetLang });
+
         const translatedTitle = await translateText(recipe.title, sourceLang, targetLang);
+        console.log('✓ Title translated:', translatedTitle);
+
         const translatedIngredients = await Promise.all(
           recipe.ingredients.map((ing) => translateText(ing, sourceLang, targetLang))
         );
+        console.log('✓ Ingredients translated:', translatedIngredients);
+
         const translatedInstructions = recipe.instructions
           ? await translateText(recipe.instructions, sourceLang, targetLang)
           : '';
         const translatedNotes = recipe.notes
           ? await translateText(recipe.notes, sourceLang, targetLang)
           : '';
+
+        console.log('✓ All translations complete, updating state');
 
         setAutoTranslations((prev) => ({
           ...prev,
@@ -74,7 +95,7 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
           },
         }));
       } catch (err) {
-        console.error('Auto-translation failed:', err);
+        console.error('❌ Auto-translation failed:', err);
       } finally {
         setAutoTranslating(false);
       }
