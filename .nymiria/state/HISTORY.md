@@ -130,3 +130,9 @@
 **Decisions:** just test if the app can save.** Since sync was showing "synced" earlier, maybe, the **older Tencent CloudBase console** instead:
 
 ---
+## 2026-04-05T09:09:10.027Z — claude
+**Summary:** Discussed: added this and still getting an error. it seems to say sign …; Access to fetch at 'https://recipi-6gjlno6o87a7532b.ap-shang…; yes that worked. no more errors and it says synced. i added …; this whole page should be in chinese but you can see the rec…; no it didn’t get fixed. please make sure the below two are d…
+**Files Changed:** src/utils/translateRecipe.js, index-CjY2v9zk.js, index-BDhuFf4m.js, index-D193ktTH.js, vercel.json, baiduTranslate.js, tencentSync.js, RecipeList.jsx, RecipeDetail.jsx, RecipeForm.jsx, translateRecipe.js, index-Czfqaz3B.js, Node.js
+**Decisions:** just test if the app can save.** Since sync was showing "synced" earlier, maybe, set it up now. Here's what to do:, the **older Tencent CloudBase console** instead:
+
+---
