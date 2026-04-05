@@ -107,3 +107,32 @@ Discussed: did you get the issue above?; would vercel work in china though? do n
 - I update the action plan** with what was just discussed?
 
 ---
+
+## April 5, 2026
+
+Discussed: did you finish the above task?; ask fresh; my last message completion message did not have an arrow dro…; my last message completion message did not have an arrow dro…; ask fresh
+
+**Files touched:**
+- `src/lib/cache/cacheMetrics.ts`
+- `src/lib/chat/engine.ts`
+- `src/components/chat/ChatPanel.tsx`
+- `src/usage.rs`
+- `src/lib/tokenUsage.ts`
+- `src/chat.rs`
+- `lib/chat/dispatch.ts`
+- `cacheMetrics.ts`
+- `engine.ts`
+- `ChatPanel.tsx`
+
+**Next steps:**
+- this be a task on kanban board?
+- paste your `/diagnostics` numbers — the live data lives in your browser, not the
+- this be a Kanban card?** Yes — it's an open loop with a defined due date. Want m
+- read from the SAME data source as the
+- NOT be passed as a CLI flag. Instead:
+- just be one? i think there meant to be a faint boarder when chatbox is not activ
+- be much more noticeable now.
+- have all the tab options, i only see four. in other agent tab settings i see mor
+- be called master agent and make sure it’s still synced to telegram/discord/slack
+
+---
