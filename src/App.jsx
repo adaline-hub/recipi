@@ -3,7 +3,7 @@ import RecipeList from './components/RecipeList';
 import RecipeDetail from './components/RecipeDetail';
 import RecipeForm from './components/RecipeForm';
 import ImportExport from './components/ImportExport';
-import SyncStatus from './components/SyncStatus';
+import LanguageSwitcher from './components/LanguageSwitcher';
 import { fetchRecipesFromSupabase, subscribeToRecipeChanges, unsubscribeFromRecipeChanges } from './lib/tencentSync';
 
 // Views: list | detail | add | edit | importexport
@@ -50,51 +50,26 @@ export default function App() {
     showDetail(id);
   }
 
+  let content = null;
   if (view === 'list') {
-    return (
-      <RecipeList
-        onSelectRecipe={showDetail}
-        onAddRecipe={showAdd}
-        onImportExport={showImportExport}
-      />
-    );
+    content = <RecipeList onSelectRecipe={showDetail} onAddRecipe={showAdd} onImportExport={showImportExport} />;
+  } else if (view === 'detail') {
+    content = <RecipeDetail recipeId={selectedRecipeId} onBack={showList} onEdit={showEdit} />;
+  } else if (view === 'add') {
+    content = <RecipeForm recipeId={null} onBack={showList} onSaved={handleSaved} />;
+  } else if (view === 'edit') {
+    content = <RecipeForm recipeId={selectedRecipeId} onBack={() => showDetail(selectedRecipeId)} onSaved={handleSaved} />;
+  } else if (view === 'importexport') {
+    content = <ImportExport onBack={showList} />;
   }
 
-  if (view === 'detail') {
-    return (
-      <RecipeDetail
-        recipeId={selectedRecipeId}
-        onBack={showList}
-        onEdit={showEdit}
-      />
-    );
-  }
-
-  if (view === 'add') {
-    return (
-      <RecipeForm
-        recipeId={null}
-        onBack={showList}
-        onSaved={handleSaved}
-      />
-    );
-  }
-
-  if (view === 'edit') {
-    return (
-      <RecipeForm
-        recipeId={selectedRecipeId}
-        onBack={() => showDetail(selectedRecipeId)}
-        onSaved={handleSaved}
-      />
-    );
-  }
-
-  if (view === 'importexport') {
-    return (
-      <ImportExport onBack={showList} />
-    );
-  }
-
-  return null;
+  return (
+    <div>
+      {/* Global language switcher — always visible top right */}
+      <div className="fixed top-3 right-3 z-50">
+        <LanguageSwitcher />
+      </div>
+      {content}
+    </div>
+  );
 }

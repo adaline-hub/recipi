@@ -1,13 +1,52 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRecipes } from '../hooks/useRecipes';
-import LanguageSwitcher from './LanguageSwitcher';
 import SyncStatus from './SyncStatus';
+import { translateText } from '../utils/translate';
+import { mapLanguageToBaidu } from '../utils/baiduTranslate';
 
 export default function RecipeList({ onSelectRecipe, onAddRecipe, onImportExport }) {
   const recipes = useRecipes();
   const [search, setSearch] = useState('');
-  const { t } = useTranslation();
+  const [translatedTitles, setTranslatedTitles] = useState({});
+  const { t, i18n } = useTranslation();
+  const currentLang = i18n.language;
+
+  // Auto-translate recipe titles when language changes
+  useEffect(() => {
+    if (!recipes || recipes.length === 0) return;
+
+    async function translateTitles() {
+      const newTitles = {};
+      for (const recipe of recipes) {
+        const originalLang = recipe.language || 'en';
+        if (currentLang === originalLang) {
+          newTitles[recipe.id] = recipe.title;
+          continue;
+        }
+        // Check saved translation first
+        const saved = recipe.translations?.[currentLang];
+        if (saved?.title) {
+          newTitles[recipe.id] = saved.title;
+          continue;
+        }
+        // Auto-translate
+        try {
+          const translated = await translateText(
+            recipe.title,
+            mapLanguageToBaidu(originalLang),
+            mapLanguageToBaidu(currentLang)
+          );
+          newTitles[recipe.id] = translated;
+        } catch {
+          newTitles[recipe.id] = recipe.title;
+        }
+      }
+      setTranslatedTitles(newTitles);
+    }
+
+    translateTitles();
+  }, [recipes, currentLang]);
 
   const filtered = (recipes || []).filter((r) => {
     const searchLower = search.toLowerCase();
@@ -33,7 +72,6 @@ export default function RecipeList({ onSelectRecipe, onAddRecipe, onImportExport
             <p className="text-blue-100 text-sm">{t('app.tagline')}</p>
           </div>
           <div className="flex flex-col items-end gap-2 mt-1">
-            <LanguageSwitcher />
             <SyncStatus />
           </div>
         </div>
@@ -95,7 +133,7 @@ export default function RecipeList({ onSelectRecipe, onAddRecipe, onImportExport
               >
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
-                    <h2 className="text-xl font-bold text-gray-800">{recipe.title}</h2>
+                    <h2 className="text-xl font-bold text-gray-800">{translatedTitles[recipe.id] || recipe.title}</h2>
                     {recipe.createdBy && (
                       <span className="bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded-full font-medium flex-shrink-0">
                         {t('list.by')} {recipe.createdBy}
