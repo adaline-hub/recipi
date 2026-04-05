@@ -14,8 +14,8 @@ export function isBaiduConfigured() {
 }
 
 /**
- * Translate text via our Vercel API proxy (avoids CORS issues).
- * The proxy calls Baidu server-to-server.
+ * Translate text via Tencent CloudBase Cloud Function.
+ * Works from both US and China (hosted on Tencent servers).
  */
 export async function translateWithBaidu(text, fromLang, toLang) {
   if (!text || text.trim().length === 0) return text;
@@ -26,7 +26,7 @@ export async function translateWithBaidu(text, fromLang, toLang) {
   if (from === to) return text;
 
   try {
-    const response = await fetch('/api/translate', {
+    const response = await fetch('https://service-ighqgx43z3n.tcb-api.tencentcloudapi.com/translate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ text, from, to }),
