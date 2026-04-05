@@ -136,3 +136,33 @@ Discussed: did you finish the above task?; ask fresh; my last message completion
 - be called master agent and make sure it’s still synced to telegram/discord/slack
 
 ---
+
+## April 5, 2026
+
+Discussed: if its here you want me to check, there doesnt seem to be an…; are you processing the above?; this is the document database page. i dont see any collectio…; https://console.cloud.tencent.com/tcb
+
+**Decisions:**
+- just test if the app can save.** Since sync was showing "synced" earlier, maybe
+- set it up now. Here's what to do:
+- the **older Tencent CloudBase console** instead:
+
+**Files touched:**
+- `index-Czfqaz3B.js`
+- `Node.js`
+- `node.js`
+- `index.js`
+- `index-D9Hzi93o.js`
+
+**Next steps:**
+- also save to Tencent CloudBase. But they might only be in the local browser.
+- pull recipes from Tencent CloudBase. But they're not appearing, which means eith
+- show the recipes you added)
+- see either:**
+- be in Tencent Document Database
+- say "synced")
+- be a separate section. If you click around in the sidebar, it should be a simple
+- be created too.
+- I update the action plan** with what was just discussed?
+- have a clearer "Database" section with your collections. Look for:
+
+---
