@@ -483,3 +483,32 @@ Discussed: can you open tcb-translate.zip in the /tmp folder again?; api key set
 - find the real endpoint.
 
 ---
+
+## April 5, 2026
+
+Discussed: Here?; i dont see any url here; i havent found the http access url yet. you fixed it without…; i dont see a trigger configured but if you got the link lets…; Access to fetch at 'https://service-ighqgx43z3n.tcb-api.tenc…
+
+**Decisions:**
+- fix CORS in Tencent.** That's the immediate blocker. In your Tencent CloudBase c
+
+**Files touched:**
+- `index-D9Hzi93o.js`
+- `Node.js`
+- `index-C737gf8f.js`
+- `index-DRtm8yeZ.js`
+- `tencentSync.js`
+- `baiduTranslate.js`
+
+**Next steps:**
+- look like `https://service-xxx.tcb-api.tencentcloudapi.com/translate` or similar
+- update in the app code.
+- be something like `https://service-xxxx.tcb-api.tencentcloudapi.com`).
+- show translation API calls succeeding
+- display fully translated
+- sync and show translated content
+- verify it's correct.
+- be an **Access URL** or **Endpoint** field
+- find the real endpoint.
+- enable it. Click the **"Edit trigger"** link to set up an HTTP trigger. That wil
+
+---
