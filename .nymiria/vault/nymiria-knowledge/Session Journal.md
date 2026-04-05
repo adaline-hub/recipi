@@ -256,3 +256,33 @@ Discussed: Any of these is my next step?; so we are back at where we were; i don
 - now be open in Finder or your default archive application. You can now drag it i
 
 ---
+
+## April 5, 2026
+
+Discussed: so we are back at where we were; i dont see just database. i see relational database and docu…; did you see the above message?; this is what shows; RecipeDetail auto-translate check: {recipeId: 'ee6d3dea-4e5a…
+
+**Decisions:**
+- just test if the app can save.** Since sync was showing "synced" earlier, maybe
+- set it up now. Here's what to do:
+- fix CORS in Tencent.** That's the immediate blocker. In your Tencent CloudBase c
+
+**Files touched:**
+- `index-Czfqaz3B.js`
+- `Node.js`
+- `node.js`
+- `index.js`
+- `index-D9Hzi93o.js`
+
+**Next steps:**
+- access the **Database** section. Look in the left sidebar — do you see an option
+- have it somewhere near the top under "Tencent CloudBase."
+- activate this??
+- **activate/initialize it** which typically happens automatically when you first
+- I update the action plan** with what was just discussed?
+- set up servers, providing Ops-free, elastically scalable computing services that
+- now be open in Finder or your default archive application. You can now drag it i
+- look like `https://service-xxx.tcb-api.tencentcloudapi.com/translate` or similar
+- update in the app code.
+- be something like `https://service-xxxx.tcb-api.tencentcloudapi.com`).
+
+---
