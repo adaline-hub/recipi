@@ -124,3 +124,9 @@
 **Files Changed:** src/lib/cache/cacheMetrics.ts, src/lib/chat/engine.ts, src/components/chat/ChatPanel.tsx, src/usage.rs, src/lib/tokenUsage.ts, src/chat.rs, lib/chat/dispatch.ts, cacheMetrics.ts, engine.ts, ChatPanel.tsx, SetupPanel.tsx, ActivityLog.tsx, usage.rs, statsCache.json, usage.json
 
 ---
+## 2026-04-05T09:02:22.072Z — claude
+**Summary:** Discussed: whats the localhost that i should add?; added this and still getting an error. it seems to say sign …; Access to fetch at 'https://recipi-6gjlno6o87a7532b.ap-shang…; yes that worked. no more errors and it says synced. i added …; this whole page should be in chinese but you can see the rec…
+**Files Changed:** src/utils/translateRecipe.js, index-CjY2v9zk.js, index-BDhuFf4m.js, index-D193ktTH.js, vercel.json, baiduTranslate.js, tencentSync.js, RecipeList.jsx, RecipeDetail.jsx, RecipeForm.jsx, translateRecipe.js, index-Czfqaz3B.js
+**Decisions:** just test if the app can save.** Since sync was showing "synced" earlier, maybe, the **older Tencent CloudBase console** instead:
+
+---
