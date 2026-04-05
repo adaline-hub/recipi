@@ -26,7 +26,7 @@ export async function translateWithBaidu(text, fromLang, toLang) {
   if (from === to) return text;
 
   try {
-    const response = await fetch('https://recipi-6gjlno6o87a7532b.ap-singapore.app.tcloudbase.com/translate', {
+    const response = await fetch('https://recipi-6gjlno6o87a7532b.ap-singapore.app.tcloudbase.com/http/translate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ text, from, to }),
