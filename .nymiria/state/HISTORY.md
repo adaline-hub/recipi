@@ -175,3 +175,9 @@
 **Files Changed:** src/lib/cache/cacheMetrics.ts, src/lib/chat/engine.ts, src/components/chat/ChatPanel.tsx, src/usage.rs, src/lib/tokenUsage.ts, src/chat.rs, lib/chat/dispatch.ts, cacheMetrics.ts, engine.ts, ChatPanel.tsx, SetupPanel.tsx, ActivityLog.tsx, usage.rs, statsCache.json, usage.json
 
 ---
+## 2026-04-05T10:48:08.754Z — claude
+**Summary:** Discussed: i dont see just database. i see relational database and docu…; did you see the above message?; this is what shows; RecipeDetail auto-translate check: {recipeId: 'ee6d3dea-4e5a…
+**Files Changed:** index-Czfqaz3B.js, Node.js, node.js, index.js, index-D9Hzi93o.js, index-C737gf8f.js
+**Decisions:** just test if the app can save.** Since sync was showing "synced" earlier, maybe, set it up now. Here's what to do:, fix CORS in Tencent.** That's the immediate blocker. In your Tencent CloudBase c
+
+---
