@@ -227,3 +227,15 @@
 **Files Changed:** src/lib/cache/cacheMetrics.ts, src/lib/chat/engine.ts, src/components/chat/ChatPanel.tsx, src/usage.rs, src/lib/tokenUsage.ts, src/chat.rs, lib/chat/dispatch.ts, cacheMetrics.ts, engine.ts, ChatPanel.tsx, SetupPanel.tsx, ActivityLog.tsx, usage.rs, statsCache.json, usage.json
 
 ---
+## 2026-04-05T11:16:00.914Z — claude
+**Summary:** Discussed: Here?; i dont see any url here; i havent found the http access url yet. you fixed it without…; i dont see a trigger configured but if you got the link lets…; Access to fetch at 'https://service-ighqgx43z3n.tcb-api.tenc…
+**Files Changed:** index-D9Hzi93o.js, Node.js, index-C737gf8f.js, index-DRtm8yeZ.js, tencentSync.js, baiduTranslate.js
+**Decisions:** fix CORS in Tencent.** That's the immediate blocker. In your Tencent CloudBase c
+
+---
+## 2026-04-05T11:19:04.282Z — claude
+**Summary:** Discussed: Here?; i dont see any url here; i havent found the http access url yet. you fixed it without…; i dont see a trigger configured but if you got the link lets…; Access to fetch at 'https://service-ighqgx43z3n.tcb-api.tenc…
+**Files Changed:** index-D9Hzi93o.js, Node.js, index-C737gf8f.js, index-DRtm8yeZ.js, tencentSync.js, baiduTranslate.js
+**Decisions:** fix CORS in Tencent.** That's the immediate blocker. In your Tencent CloudBase c
+
+---
