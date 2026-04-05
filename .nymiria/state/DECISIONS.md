@@ -42,3 +42,13 @@ The issue is **anonymous login authentication**. Let's try **API Key authenticat
 3. Lo
 
 ---
+## 2026-04-05 — the **older Tencent CloudBase console** instead:
+**Provider:** claude
+**Rationale:** (auto-detected)
+**Source:** I see the issue now. You're in the **Relational Database** (MySQL) section, but the JS SDK uses Tencent CloudBase's **built-in document database**, which is different.
+
+The Tencent console seems to have been reorganized. Try going to the **older Tencent CloudBase console** instead:
+
+**Go to: https:/
+
+---
