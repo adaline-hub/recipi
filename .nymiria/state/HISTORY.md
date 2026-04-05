@@ -136,3 +136,9 @@
 **Decisions:** just test if the app can save.** Since sync was showing "synced" earlier, maybe, set it up now. Here's what to do:, the **older Tencent CloudBase console** instead:
 
 ---
+## 2026-04-05T09:20:14.629Z — claude
+**Summary:** Discussed: did you get the issue above?; would vercel work in china though? do not forget that’s our …; can you review the below ideas from gemini and recommend wha…; permission fixed. can you implement translate on save; no if i open the site in a different browser, there’s no rec…
+**Files Changed:** src/utils/translateRecipe.js, vercel.json, baiduTranslate.js, tencentSync.js, RecipeList.jsx, RecipeDetail.jsx, RecipeForm.jsx, translateRecipe.js, index-Czfqaz3B.js, Node.js, node.js, index.js
+**Decisions:** just test if the app can save.** Since sync was showing "synced" earlier, maybe, set it up now. Here's what to do:, the **older Tencent CloudBase console** instead:
+
+---

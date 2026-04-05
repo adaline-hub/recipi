@@ -72,3 +72,38 @@ Discussed: added this and still getting an error. it seems to say sign …; Acce
 - store the translation in your database alongside the original recipe the first t
 
 ---
+
+## April 5, 2026
+
+Discussed: did you get the issue above?; would vercel work in china though? do not forget that’s our …; can you review the below ideas from gemini and recommend wha…; permission fixed. can you implement translate on save; no if i open the site in a different browser, there’s no rec…
+
+**Decisions:**
+- just test if the app can save.** Since sync was showing "synced" earlier, maybe
+- set it up now. Here's what to do:
+- the **older Tencent CloudBase console** instead:
+
+**Files touched:**
+- `src/utils/translateRecipe.js`
+- `vercel.json`
+- `baiduTranslate.js`
+- `tencentSync.js`
+- `RecipeList.jsx`
+- `RecipeDetail.jsx`
+- `RecipeForm.jsx`
+- `translateRecipe.js`
+- `index-Czfqaz3B.js`
+- `Node.js`
+
+**Next steps:**
+- deploy to **Vercel** (not GitHub Pages) so the `/api/translate` serverless funct
+- show Vite)
+- I help you:
+- call the translation service directly in your code when a recipe is displayed.
+- store the translation in your database alongside the original recipe the first t
+- loosen the Access Control List (ACL) or security rules in your Tencent database
+- automatically start pulling in the recipes from both of you.
+- make both of your recipes visible to each other immediately.
+- populate it at save time rather than translate on the fly.
+- I update the action plan** with what was just discussed?
+
+---
