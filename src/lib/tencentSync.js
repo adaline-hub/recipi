@@ -41,8 +41,10 @@ let authReady = false;
 
 async function ensureAuth() {
   if (authReady) return;
+  console.log('🔐 Signing in anonymously to Tencent...');
   await auth.signInAnonymously();
   authReady = true;
+  console.log('✓ Tencent auth ready');
 }
 
 export async function fetchRecipesFromSupabase() {
@@ -50,7 +52,9 @@ export async function fetchRecipesFromSupabase() {
     setSyncStatus(SYNC_STATUS.SYNCING);
     await ensureAuth();
 
+    console.log('📥 Fetching recipes from Tencent...');
     const { data } = await database.collection('recipes').get();
+    console.log('📥 Tencent returned', data?.length ?? 0, 'recipes');
 
     if (data && data.length > 0) {
       for (const recipe of data) {
@@ -58,11 +62,12 @@ export async function fetchRecipesFromSupabase() {
         delete recipeData._id;
         await db.recipes.put(recipeData);
       }
+      console.log('✓ Local DB updated with', data.length, 'recipes');
     }
 
     setSyncStatus(SYNC_STATUS.SYNCED);
   } catch (err) {
-    console.error('Error syncing recipes from Tencent:', err);
+    console.error('❌ Error syncing recipes from Tencent:', err);
     setSyncStatus(SYNC_STATUS.ERROR);
   }
 }
@@ -71,6 +76,8 @@ export async function saveRecipeToSupabase(recipe) {
   try {
     setSyncStatus(SYNC_STATUS.SYNCING);
     await ensureAuth();
+
+    console.log('📤 Saving recipe to Tencent:', recipe.title);
 
     const recipeData = {
       id: recipe.id,
@@ -93,14 +100,16 @@ export async function saveRecipeToSupabase(recipe) {
 
     if (existing && existing.length > 0) {
       await database.collection('recipes').doc(existing[0]._id).update(recipeData);
+      console.log('✓ Recipe updated in Tencent');
     } else {
       await database.collection('recipes').add(recipeData);
+      console.log('✓ Recipe added to Tencent');
     }
 
     setSyncStatus(SYNC_STATUS.SYNCED);
     return true;
   } catch (err) {
-    console.error('Error saving recipe to Tencent:', err);
+    console.error('❌ Error saving recipe to Tencent:', err);
     setSyncStatus(SYNC_STATUS.ERROR);
     return false;
   }
@@ -123,7 +132,7 @@ export async function deleteRecipeFromSupabase(recipeId) {
     setSyncStatus(SYNC_STATUS.SYNCED);
     return true;
   } catch (err) {
-    console.error('Error deleting recipe from Tencent:', err);
+    console.error('❌ Error deleting recipe from Tencent:', err);
     setSyncStatus(SYNC_STATUS.ERROR);
     return false;
   }
