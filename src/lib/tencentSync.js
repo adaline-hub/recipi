@@ -1,16 +1,9 @@
-import cloudbase from '@cloudbase/js-sdk';
 import { db } from '../db';
 
 const TCB_ENV = 'recipi-6gjlno6o87a7532b';
-const TCB_PUBLISHABLE_KEY = import.meta.env.VITE_TCB_PUBLISHABLE_KEY;
-
-// Initialize Tencent CloudBase with publishable key
-const app = cloudbase.init({
-  env: TCB_ENV,
-});
-
-const auth = app.auth({ publishableKey: TCB_PUBLISHABLE_KEY });
-const database = app.database();
+const TCB_TOKEN = import.meta.env.VITE_TCB_PUBLISHABLE_KEY;
+// Singapore region endpoint (extracted from publishable key issuer)
+const TCB_BASE = `https://${TCB_ENV}.ap-shanghai.tcb-api.tencentcloudapi.com/web/v1`;
 
 export const SYNC_STATUS = {
   SYNCED: 'synced',
@@ -21,33 +14,43 @@ export const SYNC_STATUS = {
 
 let currentSyncStatus = SYNC_STATUS.OFFLINE;
 let syncStatusCallback = null;
-let subscription = null;
 
-/**
- * Register a callback to be notified of sync status changes
- */
 export function onSyncStatusChange(callback) {
   syncStatusCallback = callback;
   callback(currentSyncStatus);
 }
 
-/**
- * Set sync status and notify listeners
- */
 function setSyncStatus(status) {
   if (currentSyncStatus !== status) {
     currentSyncStatus = status;
-    if (syncStatusCallback) {
-      syncStatusCallback(status);
-    }
+    if (syncStatusCallback) syncStatusCallback(status);
   }
 }
 
-/**
- * Get current sync status
- */
 export function getSyncStatus() {
   return currentSyncStatus;
+}
+
+/**
+ * Make authenticated HTTP request to Tencent CloudBase database API
+ */
+async function tcbRequest(action, body) {
+  const res = await fetch(`${TCB_BASE}/database/${action}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${TCB_TOKEN}`,
+      'X-CloudBase-Env': TCB_ENV,
+    },
+    body: JSON.stringify({ env: TCB_ENV, ...body }),
+  });
+
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`TCB API error ${res.status}: ${text}`);
+  }
+
+  return res.json();
 }
 
 /**
@@ -57,27 +60,17 @@ export async function fetchRecipesFromSupabase() {
   try {
     setSyncStatus(SYNC_STATUS.SYNCING);
 
-    // Authenticate with publishable key
-    try {
-      await auth.signInAnonymously();
-    } catch (authErr) {
-      console.warn('⚠️ Auth failed:', authErr);
-    }
+    const result = await tcbRequest('query', {
+      collection: 'recipes',
+      query: '{}',
+      limit: 200,
+    });
 
-    // Fetch all recipes from the 'recipes' collection
-    const { data } = await database.collection('recipes').get();
-
-    if (data && data.length > 0) {
-      for (const recipe of data) {
-        // CloudBase uses _id instead of id
-        const recipeData = {
-          ...recipe,
-          id: recipe._id,
-        };
-        delete recipeData._id;
-
-        await db.recipes.put(recipeData);
-      }
+    const records = result.data || [];
+    for (const recipe of records) {
+      const recipeData = { ...recipe, id: recipe.id || recipe._id };
+      delete recipeData._id;
+      await db.recipes.put(recipeData);
     }
 
     setSyncStatus(SYNC_STATUS.SYNCED);
@@ -108,21 +101,20 @@ export async function saveRecipeToSupabase(recipe) {
       updatedAt: recipe.updatedAt,
     };
 
-    // Check if recipe exists
-    const { data: existing } = await database
-      .collection('recipes')
-      .where({ id: recipe.id })
-      .get();
-
-    if (existing && existing.length > 0) {
-      // Update existing recipe
-      await database
-        .collection('recipes')
-        .doc(existing[0]._id)
-        .update(recipeData);
-    } else {
-      // Add new recipe
-      await database.collection('recipes').add(recipeData);
+    // Try to update first, then insert if not found
+    try {
+      await tcbRequest('update', {
+        collection: 'recipes',
+        query: `{"id":"${recipe.id}"}`,
+        multi: false,
+        upsert: true,
+        data: `{"$set":${JSON.stringify(recipeData)}}`,
+      });
+    } catch {
+      await tcbRequest('add', {
+        collection: 'recipes',
+        data: JSON.stringify(recipeData),
+      });
     }
 
     setSyncStatus(SYNC_STATUS.SYNCED);
@@ -141,14 +133,11 @@ export async function deleteRecipeFromSupabase(recipeId) {
   try {
     setSyncStatus(SYNC_STATUS.SYNCING);
 
-    const { data: existing } = await database
-      .collection('recipes')
-      .where({ id: recipeId })
-      .get();
-
-    if (existing && existing.length > 0) {
-      await database.collection('recipes').doc(existing[0]._id).remove();
-    }
+    await tcbRequest('delete', {
+      collection: 'recipes',
+      query: `{"id":"${recipeId}"}`,
+      multi: false,
+    });
 
     setSyncStatus(SYNC_STATUS.SYNCED);
     return true;
@@ -159,21 +148,8 @@ export async function deleteRecipeFromSupabase(recipeId) {
   }
 }
 
-/**
- * Subscribe to real-time changes from Tencent CloudBase
- * Note: Real-time requires additional configuration in Tencent CloudBase console
- * For now, we skip it and rely on page refresh for sync
- */
 export function subscribeToRecipeChanges() {
   return null;
 }
 
-/**
- * Unsubscribe from real-time changes
- */
-export function unsubscribeFromRecipeChanges() {
-  if (subscription) {
-    subscription.off();
-    subscription = null;
-  }
-}
+export function unsubscribeFromRecipeChanges() {}
