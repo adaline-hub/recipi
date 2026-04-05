@@ -599,3 +599,34 @@ Discussed: Here?; i dont see any url here; i havent found the http access url ye
 - enable it. Click the **"Edit trigger"** link to set up an HTTP trigger. That wil
 
 ---
+
+## April 5, 2026
+
+Discussed: Access to fetch at 'https://service-ighqgx43z3n.tcb-api.tenc…; did you check the above console error?; 1. i dont see a place to reupload the file. do i need to del…; regular or http function?; oh that might be the issue with translate function we create…
+
+**Decisions:**
+- fix CORS in Tencent.** That's the immediate blocker. In your Tencent CloudBase c
+
+**Files touched:**
+- `src/utils/translateRecipe.js`
+- `index-D9Hzi93o.js`
+- `Node.js`
+- `index-C737gf8f.js`
+- `index-DRtm8yeZ.js`
+- `tencentSync.js`
+- `baiduTranslate.js`
+- `translateRecipe.js`
+
+**Next steps:**
+- enable it. Click the **"Edit trigger"** link to set up an HTTP trigger. That wil
+- set up the trigger properly.
+- happen in the Tencent console before testing again:
+- delete and recreate function? 2. how would i set the path to /translate
+- be able to upload a new zip without deleting. If you can't find it, yes, you'd n
+- I update the action plan** with what was just discussed?
+- show an endpoint like `https://recipi-6gjlno6o87a7532b.ap-singapore.app.tcloudba
+- configure. Can you scroll down on that page and look for CORS/domain settings?
+- see successful translation calls
+- display fully translated
+
+---

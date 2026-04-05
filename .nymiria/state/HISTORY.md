@@ -239,3 +239,10 @@
 **Decisions:** fix CORS in Tencent.** That's the immediate blocker. In your Tencent CloudBase c
 
 ---
+## 2026-04-05T19:52:44.264Z — claude
+**Summary:** Discussed: Access to fetch at 'https://service-ighqgx43z3n.tcb-api.tenc…; did you check the above console error?; 1. i dont see a place to reupload the file. do i need to del…; regular or http function?; oh that might be the issue with translate function we create…
+**Duration:** 5 min
+**Files Changed:** src/utils/translateRecipe.js, index-D9Hzi93o.js, Node.js, index-C737gf8f.js, index-DRtm8yeZ.js, tencentSync.js, baiduTranslate.js, translateRecipe.js
+**Decisions:** fix CORS in Tencent.** That's the immediate blocker. In your Tencent CloudBase c
+
+---
