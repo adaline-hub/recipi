@@ -29,3 +29,16 @@ You want:
 **Step 2 — Enable CloudB
 
 ---
+## 2026-04-05 — try **API Key authentication instead** (more reliable for web):
+**Provider:** claude
+**Rationale:** (auto-detected)
+**Source:** Fair point — you've already paid. Let me debug properly.
+
+The issue is **anonymous login authentication**. Let's try **API Key authentication instead** (more reliable for web):
+
+**Step 1 — Get API Key from Tencent:**
+1. Go to your Tencent CloudBase console
+2. Click **安全配置** (Security Settings)
+3. Lo
+
+---
