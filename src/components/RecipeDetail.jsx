@@ -50,8 +50,8 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
     async function autoTranslate() {
       setAutoTranslating(true);
       try {
-        const sourceLang = recipe.language || 'en';
-        const targetLang = currentLang;
+        const sourceLang = mapLanguageToBaidu(recipe.language || 'en');
+        const targetLang = mapLanguageToBaidu(currentLang);
 
         const translatedTitle = await translateText(recipe.title, sourceLang, targetLang);
         const translatedIngredients = await Promise.all(
@@ -81,7 +81,7 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
     }
 
     autoTranslate();
-  }, [recipe, currentLang, autoTranslations]);
+  }, [recipe, currentLang]);
 
   async function handleDelete() {
     // Delete from local db first
