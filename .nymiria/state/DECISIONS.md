@@ -52,3 +52,13 @@ The Tencent console seems to have been reorganized. Try going to the **older Ten
 **Go to: https:/
 
 ---
+## 2026-04-05 — just test if the app can save.** Since sync was showing "synced" earlier, maybe
+**Provider:** claude
+**Rationale:** (auto-detected)
+**Source:** That's the external MongoDB connection wizard again. That's **not** what CloudBase uses natively.
+
+The CloudBase JS SDK uses CloudBase's **built-in document database**, not an external MongoDB. The problem is your environment may not have the built-in database activated.
+
+**Let me try a different ap
+
+---
