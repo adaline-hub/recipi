@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { db } from '../db';
 import { useRecipe } from '../hooks/useRecipes';
 import { resizeAndEncode } from '../utils/imageUtils';
-import { saveRecipeToSupabase } from '../lib/supabaseSync';
+import { saveRecipeToSupabase } from '../lib/tencentSync';
 
 const SUPPORTED_LANGUAGES = [
   { code: 'en', label: 'English' },

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRecipe } from '../hooks/useRecipes';
 import { db } from '../db';
-import { deleteRecipeFromSupabase } from '../lib/supabaseSync';
+import { deleteRecipeFromSupabase } from '../lib/tencentSync';
 import { translateText } from '../utils/translate';
 import { mapLanguageToBaidu } from '../utils/baiduTranslate';
 
