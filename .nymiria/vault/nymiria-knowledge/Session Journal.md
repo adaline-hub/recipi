@@ -915,3 +915,26 @@ Discussed: yes granted; how do i make the changes? can you make the changes for 
 - look something like:
 
 ---
+
+## April 6, 2026
+
+Discussed: i refreshed and added on browser and phone. they still cant …; it shows this in console when i added one in browser but im …; 🔐 Signing in anonymously to Tencent...; when i go to document database, i cannot go further because …; what to do here? i dont see upload file button
+
+**Files touched:**
+- `index-DJsDTskY.js`
+- `recipes.json`
+- `index-Ca0Vyd9u.js`
+
+**Next steps:**
+- **sync between devices**. That's the critical feature. Once we fix the Cloud Fun
+- see messages like `🔐 Signing in...`, `📥 Fetching recipes...`, `📥 Tencent retu
+- now appear
+- switch to Cloud Storage** — we saw that in the sidebar and it works. Instead of
+- get to the actual file storage area. Look in the left sidebar — click **"File Ma
+- use in the code.
+- look something like:
+- now show the UI (even if recipes don't sync). If you still see a blank screen, t
+- read the actual error messages (the red text at the bottom).
+- rebuild automatically—try refreshing Safari now. Let me know if the error is gon
+
+---

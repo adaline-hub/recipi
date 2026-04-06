@@ -298,3 +298,8 @@
 **Files Changed:** src/utils/translateRecipe.js, tencentSync.js, baiduTranslate.js, translateRecipe.js, index-DJsDTskY.js, recipes.json, index-Ca0Vyd9u.js
 
 ---
+## 2026-04-06T07:39:45.113Z — claude
+**Summary:** Discussed: i refreshed and added on browser and phone. they still cant …; it shows this in console when i added one in browser but im …; 🔐 Signing in anonymously to Tencent...; when i go to document database, i cannot go further because …; what to do here? i dont see upload file button
+**Files Changed:** index-DJsDTskY.js, recipes.json, index-Ca0Vyd9u.js
+
+---
