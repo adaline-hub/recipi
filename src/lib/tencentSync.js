@@ -113,33 +113,11 @@ export async function deleteRecipeFromSupabase(recipeId) {
   }
 }
 
-let watcher = null;
-
 export function subscribeToRecipeChanges() {
-  try {
-    watcher = collection.watch({
-      onChange(snapshot) {
-        snapshot.docChanges.forEach(async (change) => {
-          const { _id, ...recipe } = change.doc;
-          if (change.dataType === 'remove') {
-            await db.recipes.delete(recipe.id);
-          } else {
-            await db.recipes.put(recipe);
-          }
-        });
-      },
-      onError(err) {
-        console.error('Realtime watch error:', err);
-      },
-    });
-  } catch (err) {
-    console.error('Subscribe error:', err);
-  }
+  // Real-time push not available; poll on window focus instead
+  window.addEventListener('focus', fetchRecipesFromSupabase);
 }
 
 export function unsubscribeFromRecipeChanges() {
-  if (watcher) {
-    watcher.close();
-    watcher = null;
-  }
+  window.removeEventListener('focus', fetchRecipesFromSupabase);
 }
