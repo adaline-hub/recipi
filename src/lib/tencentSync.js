@@ -9,16 +9,8 @@ const app = cloudbase.init({
   region: 'ap-singapore',
 });
 const auth = app.auth({ publishableKey: TCB_PUBLISHABLE_KEY });
-
-// Storage is retrieved lazily to avoid initialization errors
-function getStorage() {
-  try {
-    return app.storage();
-  } catch (err) {
-    console.warn('CloudBase storage not available:', err);
-    return null;
-  }
-}
+const tcbDb = app.database();
+const collection = tcbDb.collection('recipes');
 
 export const SYNC_STATUS = {
   SYNCED: 'synced',
@@ -63,27 +55,18 @@ export async function fetchRecipesFromSupabase() {
     setSyncStatus(SYNC_STATUS.SYNCING);
     await ensureAuth();
 
-    // Try to fetch from Cloud Storage
-    const storage = getStorage();
-    if (storage) {
-      try {
-        const fileRef = storage.refFromURL(`cloud://${TCB_ENV}.7265-${TCB_ENV}-1419336399/recipes.json`);
-        const buffer = await fileRef.getBytes();
-        const text = new TextDecoder().decode(buffer);
-        const recipes = JSON.parse(text);
-
-        if (recipes && Array.isArray(recipes) && recipes.length > 0) {
-          for (const recipe of recipes) {
-            await db.recipes.put(recipe);
-          }
-        }
-      } catch (err) {
-        // Silently fail if Cloud Storage not available
+    const { data } = await collection.limit(1000).get();
+    if (data && data.length > 0) {
+      for (const recipe of data) {
+        // CloudBase adds _id, use our id field
+        const { _id, ...recipeData } = recipe;
+        await db.recipes.put(recipeData);
       }
     }
 
     setSyncStatus(SYNC_STATUS.SYNCED);
   } catch (err) {
+    console.error('Fetch error:', err);
     setSyncStatus(SYNC_STATUS.OFFLINE);
   }
 }
@@ -93,39 +76,19 @@ export async function saveRecipeToSupabase(recipe) {
     setSyncStatus(SYNC_STATUS.SYNCING);
     await ensureAuth();
 
-    const storage = getStorage();
-    if (storage) {
-      // Fetch current recipes
-      let recipes = [];
-      try {
-        const fileRef = storage.refFromURL(`cloud://${TCB_ENV}.7265-${TCB_ENV}-1419336399/recipes.json`);
-        const buffer = await fileRef.getBytes();
-        const text = new TextDecoder().decode(buffer);
-        recipes = JSON.parse(text);
-      } catch {
-        recipes = [];
-      }
+    // Check if document exists
+    const { data } = await collection.where({ id: recipe.id }).limit(1).get();
 
-      // Update or add recipe
-      const idx = recipes.findIndex(r => r.id === recipe.id);
-      if (idx >= 0) {
-        recipes[idx] = recipe;
-      } else {
-        recipes.push(recipe);
-      }
-
-      // Write back to Cloud Storage
-      try {
-        const fileRef = storage.refFromURL(`cloud://${TCB_ENV}.7265-${TCB_ENV}-1419336399/recipes.json`);
-        await fileRef.putString(JSON.stringify(recipes), 'text/plain');
-      } catch (err) {
-        console.error('Save to Cloud Storage failed:', err);
-      }
+    if (data && data.length > 0) {
+      await collection.doc(data[0]._id).update(recipe);
+    } else {
+      await collection.add(recipe);
     }
 
     setSyncStatus(SYNC_STATUS.SYNCED);
     return true;
   } catch (err) {
+    console.error('Save error:', err);
     setSyncStatus(SYNC_STATUS.ERROR);
     return false;
   }
@@ -136,38 +99,47 @@ export async function deleteRecipeFromSupabase(recipeId) {
     setSyncStatus(SYNC_STATUS.SYNCING);
     await ensureAuth();
 
-    const storage = getStorage();
-    if (storage) {
-      let recipes = [];
-      try {
-        const fileRef = storage.refFromURL(`cloud://${TCB_ENV}.7265-${TCB_ENV}-1419336399/recipes.json`);
-        const buffer = await fileRef.getBytes();
-        const text = new TextDecoder().decode(buffer);
-        recipes = JSON.parse(text);
-      } catch {
-        recipes = [];
-      }
-
-      recipes = recipes.filter(r => r.id !== recipeId);
-
-      try {
-        const fileRef = storage.refFromURL(`cloud://${TCB_ENV}.7265-${TCB_ENV}-1419336399/recipes.json`);
-        await fileRef.putString(JSON.stringify(recipes), 'text/plain');
-      } catch (err) {
-        console.error('Delete from Cloud Storage failed:', err);
-      }
+    const { data } = await collection.where({ id: recipeId }).limit(1).get();
+    if (data && data.length > 0) {
+      await collection.doc(data[0]._id).remove();
     }
 
     setSyncStatus(SYNC_STATUS.SYNCED);
     return true;
   } catch (err) {
+    console.error('Delete error:', err);
     setSyncStatus(SYNC_STATUS.ERROR);
     return false;
   }
 }
 
+let watcher = null;
+
 export function subscribeToRecipeChanges() {
-  return null;
+  try {
+    watcher = collection.watch({
+      onChange(snapshot) {
+        snapshot.docChanges.forEach(async (change) => {
+          const { _id, ...recipe } = change.doc;
+          if (change.dataType === 'remove') {
+            await db.recipes.delete(recipe.id);
+          } else {
+            await db.recipes.put(recipe);
+          }
+        });
+      },
+      onError(err) {
+        console.error('Realtime watch error:', err);
+      },
+    });
+  } catch (err) {
+    console.error('Subscribe error:', err);
+  }
 }
 
-export function unsubscribeFromRecipeChanges() {}
+export function unsubscribeFromRecipeChanges() {
+  if (watcher) {
+    watcher.close();
+    watcher = null;
+  }
+}
