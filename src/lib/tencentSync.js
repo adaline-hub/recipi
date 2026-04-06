@@ -9,7 +9,7 @@ const app = cloudbase.init({
   region: 'ap-singapore',
 });
 const auth = app.auth({ publishableKey: TCB_PUBLISHABLE_KEY });
-const storage = app.storage;
+const storage = app.storage();
 
 export const SYNC_STATUS = {
   SYNCED: 'synced',
