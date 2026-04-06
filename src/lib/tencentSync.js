@@ -11,9 +11,6 @@ const app = cloudbase.init({
 const auth = app.auth({ publishableKey: TCB_PUBLISHABLE_KEY });
 const storage = app.storage();
 
-// Cloud Storage file path for shared recipes
-const RECIPES_FILE = 'recipes.json';
-
 export const SYNC_STATUS = {
   SYNCED: 'synced',
   SYNCING: 'syncing',
@@ -44,14 +41,11 @@ let authReady = false;
 
 async function ensureAuth() {
   if (authReady) return;
-  console.log('🔐 Signing in anonymously to Tencent...');
   try {
     await auth.signInAnonymously();
     authReady = true;
-    console.log('✓ Tencent auth ready');
   } catch (err) {
-    console.error('❌ Auth failed:', err);
-    throw err;
+    console.error('Auth error:', err);
   }
 }
 
@@ -60,29 +54,25 @@ export async function fetchRecipesFromSupabase() {
     setSyncStatus(SYNC_STATUS.SYNCING);
     await ensureAuth();
 
-    console.log('📥 Fetching recipes from Cloud Storage...');
+    // Try to fetch from Cloud Storage
     try {
-      const fileRef = storage.refFromURL(`cloud://${TCB_ENV}.7265-${TCB_ENV}-1419336399/${RECIPES_FILE}`);
+      const fileRef = storage.refFromURL(`cloud://${TCB_ENV}.7265-${TCB_ENV}-1419336399/recipes.json`);
       const buffer = await fileRef.getBytes();
       const text = new TextDecoder().decode(buffer);
       const recipes = JSON.parse(text);
 
-      console.log('📥 Cloud Storage returned', recipes.length, 'recipes');
-
-      if (recipes && recipes.length > 0) {
+      if (recipes && Array.isArray(recipes) && recipes.length > 0) {
         for (const recipe of recipes) {
           await db.recipes.put(recipe);
         }
-        console.log('✓ Local DB updated with', recipes.length, 'recipes');
       }
     } catch (err) {
-      console.warn('⚠️ Could not fetch from Cloud Storage (file may not exist yet):', err.message);
+      // Silently fail if Cloud Storage not available
     }
 
     setSyncStatus(SYNC_STATUS.SYNCED);
   } catch (err) {
-    console.error('❌ Error in fetchRecipesFromSupabase:', err);
-    setSyncStatus(SYNC_STATUS.ERROR);
+    setSyncStatus(SYNC_STATUS.OFFLINE);
   }
 }
 
@@ -91,41 +81,36 @@ export async function saveRecipeToSupabase(recipe) {
     setSyncStatus(SYNC_STATUS.SYNCING);
     await ensureAuth();
 
-    console.log('📤 Syncing recipes to Cloud Storage...');
-
-    // Fetch current recipes from Cloud Storage
+    // Fetch current recipes
     let recipes = [];
     try {
-      const fileRef = storage.refFromURL(`cloud://${TCB_ENV}.7265-${TCB_ENV}-1419336399/${RECIPES_FILE}`);
+      const fileRef = storage.refFromURL(`cloud://${TCB_ENV}.7265-${TCB_ENV}-1419336399/recipes.json`);
       const buffer = await fileRef.getBytes();
       const text = new TextDecoder().decode(buffer);
       recipes = JSON.parse(text);
-      console.log('📥 Fetched', recipes.length, 'existing recipes from Cloud Storage');
-    } catch (err) {
-      console.log('ℹ️ Starting with empty recipe list (file may not exist yet)');
+    } catch {
       recipes = [];
     }
 
     // Update or add recipe
-    const existingIndex = recipes.findIndex(r => r.id === recipe.id);
-    if (existingIndex >= 0) {
-      recipes[existingIndex] = recipe;
-      console.log('✓ Recipe updated in Cloud Storage');
+    const idx = recipes.findIndex(r => r.id === recipe.id);
+    if (idx >= 0) {
+      recipes[idx] = recipe;
     } else {
       recipes.push(recipe);
-      console.log('✓ Recipe added to Cloud Storage');
     }
 
-    // Write updated recipes back to Cloud Storage
-    const jsonString = JSON.stringify(recipes, null, 2);
-    const fileRef = storage.refFromURL(`cloud://${TCB_ENV}.7265-${TCB_ENV}-1419336399/${RECIPES_FILE}`);
-    await fileRef.putString(jsonString, 'text/plain');
-    console.log('💾 Saved', recipes.length, 'recipes to Cloud Storage');
+    // Write back to Cloud Storage
+    try {
+      const fileRef = storage.refFromURL(`cloud://${TCB_ENV}.7265-${TCB_ENV}-1419336399/recipes.json`);
+      await fileRef.putString(JSON.stringify(recipes), 'text/plain');
+    } catch (err) {
+      console.error('Save to Cloud Storage failed:', err);
+    }
 
     setSyncStatus(SYNC_STATUS.SYNCED);
     return true;
   } catch (err) {
-    console.error('❌ Error saving recipe to Cloud Storage:', err);
     setSyncStatus(SYNC_STATUS.ERROR);
     return false;
   }
@@ -136,26 +121,28 @@ export async function deleteRecipeFromSupabase(recipeId) {
     setSyncStatus(SYNC_STATUS.SYNCING);
     await ensureAuth();
 
-    console.log('🗑️ Deleting recipe from Cloud Storage...');
+    let recipes = [];
+    try {
+      const fileRef = storage.refFromURL(`cloud://${TCB_ENV}.7265-${TCB_ENV}-1419336399/recipes.json`);
+      const buffer = await fileRef.getBytes();
+      const text = new TextDecoder().decode(buffer);
+      recipes = JSON.parse(text);
+    } catch {
+      recipes = [];
+    }
 
-    // Fetch current recipes
-    const fileRef = storage.refFromURL(`cloud://${TCB_ENV}.7265-${TCB_ENV}-1419336399/${RECIPES_FILE}`);
-    const buffer = await fileRef.getBytes();
-    const text = new TextDecoder().decode(buffer);
-    let recipes = JSON.parse(text);
-
-    // Remove recipe
     recipes = recipes.filter(r => r.id !== recipeId);
 
-    // Write back
-    const jsonString = JSON.stringify(recipes, null, 2);
-    await fileRef.putString(jsonString, 'text/plain');
+    try {
+      const fileRef = storage.refFromURL(`cloud://${TCB_ENV}.7265-${TCB_ENV}-1419336399/recipes.json`);
+      await fileRef.putString(JSON.stringify(recipes), 'text/plain');
+    } catch (err) {
+      console.error('Delete from Cloud Storage failed:', err);
+    }
 
-    console.log('✓ Recipe deleted from Cloud Storage');
     setSyncStatus(SYNC_STATUS.SYNCED);
     return true;
   } catch (err) {
-    console.error('❌ Error deleting recipe from Cloud Storage:', err);
     setSyncStatus(SYNC_STATUS.ERROR);
     return false;
   }
