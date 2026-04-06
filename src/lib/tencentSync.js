@@ -10,12 +10,14 @@ const app = cloudbase.init({
 });
 const auth = app.auth({ publishableKey: TCB_PUBLISHABLE_KEY });
 
-let storage;
-try {
-  storage = app.storage();
-} catch (err) {
-  console.warn('CloudBase storage not available:', err);
-  storage = null;
+// Storage is retrieved lazily to avoid initialization errors
+function getStorage() {
+  try {
+    return app.storage();
+  } catch (err) {
+    console.warn('CloudBase storage not available:', err);
+    return null;
+  }
 }
 
 export const SYNC_STATUS = {
@@ -62,6 +64,7 @@ export async function fetchRecipesFromSupabase() {
     await ensureAuth();
 
     // Try to fetch from Cloud Storage
+    const storage = getStorage();
     if (storage) {
       try {
         const fileRef = storage.refFromURL(`cloud://${TCB_ENV}.7265-${TCB_ENV}-1419336399/recipes.json`);
@@ -90,6 +93,7 @@ export async function saveRecipeToSupabase(recipe) {
     setSyncStatus(SYNC_STATUS.SYNCING);
     await ensureAuth();
 
+    const storage = getStorage();
     if (storage) {
       // Fetch current recipes
       let recipes = [];
@@ -132,6 +136,7 @@ export async function deleteRecipeFromSupabase(recipeId) {
     setSyncStatus(SYNC_STATUS.SYNCING);
     await ensureAuth();
 
+    const storage = getStorage();
     if (storage) {
       let recipes = [];
       try {

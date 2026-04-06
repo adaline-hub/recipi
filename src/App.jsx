@@ -4,7 +4,7 @@ import RecipeDetail from './components/RecipeDetail';
 import RecipeForm from './components/RecipeForm';
 import ImportExport from './components/ImportExport';
 import LanguageSwitcher from './components/LanguageSwitcher';
-import { fetchRecipesFromSupabase, subscribeToRecipeChanges, unsubscribeFromRecipeChanges } from './lib/supabaseSync';
+import { fetchRecipesFromSupabase, subscribeToRecipeChanges, unsubscribeFromRecipeChanges } from './lib/tencentSync';
 
 // Views: list | detail | add | edit | importexport
 export default function App() {

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { SYNC_STATUS, onSyncStatusChange } from '../lib/supabaseSync';
+import { SYNC_STATUS, onSyncStatusChange } from '../lib/tencentSync';
 
 export default function SyncStatus() {
   const [syncStatus, setSyncStatus] = useState(SYNC_STATUS.OFFLINE);
