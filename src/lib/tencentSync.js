@@ -3,14 +3,16 @@ import { db } from '../db';
 
 const TCB_ENV = 'recipi-6gjlno6o87a7532b';
 const TCB_PUBLISHABLE_KEY = import.meta.env.VITE_TCB_PUBLISHABLE_KEY;
+const BUCKET = `7265-${TCB_ENV}-1419336399`;
 
 const app = cloudbase.init({
   env: TCB_ENV,
   region: 'ap-singapore',
 });
 const auth = app.auth({ publishableKey: TCB_PUBLISHABLE_KEY });
-const tcbDb = app.database();
-const collection = tcbDb.collection('recipes');
+
+// app.storage is already an object (not a function)
+const bucket = app.storage.from(BUCKET);
 
 export const SYNC_STATUS = {
   SYNCED: 'synced',
@@ -55,12 +57,24 @@ export async function fetchRecipesFromSupabase() {
     setSyncStatus(SYNC_STATUS.SYNCING);
     await ensureAuth();
 
-    const { data } = await collection.limit(1000).get();
-    if (data && data.length > 0) {
-      for (const recipe of data) {
-        // CloudBase adds _id, use our id field
-        const { _id, ...recipeData } = recipe;
-        await db.recipes.put(recipeData);
+    // List all recipe files
+    const { data: files, error: listError } = await bucket.list('recipes/');
+    if (listError) {
+      console.error('List error:', listError);
+      setSyncStatus(SYNC_STATUS.OFFLINE);
+      return;
+    }
+
+    if (files && files.length > 0) {
+      for (const file of files) {
+        try {
+          const { data, error } = await bucket.download(`recipes/${file.name}`);
+          if (error || !data) continue;
+          const recipe = JSON.parse(await data.text());
+          await db.recipes.put(recipe);
+        } catch (e) {
+          console.error('Download error for', file.name, e);
+        }
       }
     }
 
@@ -76,13 +90,13 @@ export async function saveRecipeToSupabase(recipe) {
     setSyncStatus(SYNC_STATUS.SYNCING);
     await ensureAuth();
 
-    // Check if document exists
-    const { data } = await collection.where({ id: recipe.id }).limit(1).get();
+    const blob = new Blob([JSON.stringify(recipe)], { type: 'application/json' });
+    const { error } = await bucket.upload(`recipes/${recipe.id}.json`, blob, { upsert: true });
 
-    if (data && data.length > 0) {
-      await collection.doc(data[0]._id).update(recipe);
-    } else {
-      await collection.add(recipe);
+    if (error) {
+      console.error('Upload error:', error);
+      setSyncStatus(SYNC_STATUS.ERROR);
+      return false;
     }
 
     setSyncStatus(SYNC_STATUS.SYNCED);
@@ -99,9 +113,9 @@ export async function deleteRecipeFromSupabase(recipeId) {
     setSyncStatus(SYNC_STATUS.SYNCING);
     await ensureAuth();
 
-    const { data } = await collection.where({ id: recipeId }).limit(1).get();
-    if (data && data.length > 0) {
-      await collection.doc(data[0]._id).remove();
+    const { error } = await bucket.remove([`recipes/${recipeId}.json`]);
+    if (error) {
+      console.error('Delete error:', error);
     }
 
     setSyncStatus(SYNC_STATUS.SYNCED);
@@ -114,7 +128,6 @@ export async function deleteRecipeFromSupabase(recipeId) {
 }
 
 export function subscribeToRecipeChanges() {
-  // Real-time push not available; poll on window focus instead
   window.addEventListener('focus', fetchRecipesFromSupabase);
 }
 
