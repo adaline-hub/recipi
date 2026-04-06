@@ -1008,3 +1008,26 @@ Discussed: cloud://recipi-6gjlno6o87a7532b.7265-recipi-6gjlno6o87a7532b…; ok r
 - commit and push. Should I do that now?
 
 ---
+
+## April 6, 2026
+
+Discussed: long press url bar does not give me develop option; page on my phone is blank. no ui at all just a white screen; no its still loading a blank white page. im using incognito; i opened it on my mac safari and its also blank. is there a …; i dont see develop menu anywhere here
+
+**Files touched:**
+- `index-Ca0Vyd9u.js`
+- `tencentSync.js`
+- `index-Dn6sl-5V.js`
+
+**Next steps:**
+- now show the UI (even if recipes don't sync). If you still see a blank screen, t
+- read the actual error messages (the red text at the bottom).
+- rebuild automatically—try refreshing Safari now. Let me know if the error is gon
+- rebuild the app:
+- redeploy after the rebuild.
+- have the access to update and deploy updates. you have been doing so. it’s on th
+- rebuild automatically. Now do a **hard refresh** on Safari (Cmd+Shift+R) to clea
+- be gone when the page reloads.
+- remember that im not using local host. im on github page now which you have the
+- commit and push. Should I do that now?
+
+---
