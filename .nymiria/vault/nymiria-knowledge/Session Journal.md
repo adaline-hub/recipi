@@ -888,3 +888,30 @@ Discussed: yes granted; how do i make the changes? can you make the changes for 
 - look something like:
 
 ---
+
+## April 5, 2026
+
+Discussed: yes granted; how do i make the changes? can you make the changes for us?; i have bypasspermissions on?; This?
+
+**Files touched:**
+- `src/utils/translateRecipe.js`
+- `tencentSync.js`
+- `baiduTranslate.js`
+- `translateRecipe.js`
+- `index-DJsDTskY.js`
+- `recipes.json`
+- `index-Ca0Vyd9u.js`
+
+**Next steps:**
+- grant them. But here's the plan:
+- change so you can see the plan:
+- fix the PERMISSION_DENIED error.
+- **sync between devices**. That's the critical feature. Once we fix the Cloud Fun
+- see messages like `🔐 Signing in...`, `📥 Fetching recipes...`, `📥 Tencent retu
+- now appear
+- switch to Cloud Storage** — we saw that in the sidebar and it works. Instead of
+- get to the actual file storage area. Look in the left sidebar — click **"File Ma
+- use in the code.
+- look something like:
+
+---
