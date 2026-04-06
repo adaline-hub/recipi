@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRecipe } from '../hooks/useRecipes';
 import { db } from '../db';
-import { deleteRecipeFromSupabase } from '../lib/tencentSync';
+import { deleteRecipeFromSupabase } from '../lib/supabaseSync';
 
 const LANGUAGE_LABELS = {
   en: 'English',
