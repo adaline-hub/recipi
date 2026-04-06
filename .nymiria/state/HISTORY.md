@@ -313,3 +313,8 @@
 **Files Changed:** recipes.json, index-Ca0Vyd9u.js, tencentSync.js
 
 ---
+## 2026-04-06T07:55:14.021Z — claude
+**Summary:** Discussed: cloud://recipi-6gjlno6o87a7532b.7265-recipi-6gjlno6o87a7532b…; ok recipe added on browser but when i load the github page o…; there’s no f12 on my phone; long press url bar does not give me develop option; page on my phone is blank. no ui at all just a white screen
+**Files Changed:** recipes.json, index-Ca0Vyd9u.js, tencentSync.js
+
+---
