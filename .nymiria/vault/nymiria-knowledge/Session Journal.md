@@ -746,3 +746,32 @@ Discussed: oh that might be the issue with translate function we create…; thes
 - grant them. But here's the plan:
 
 ---
+
+## April 5, 2026
+
+Discussed: oh that might be the issue with translate function we create…; these settings off?; it failed again. really having trouble here with this task p…; ok success creating the function. is this what you need?
+
+**Files touched:**
+- `src/utils/translateRecipe.js`
+- `Node.js`
+- `index-C737gf8f.js`
+- `index-DRtm8yeZ.js`
+- `tencentSync.js`
+- `baiduTranslate.js`
+- `translateRecipe.js`
+- `index-DJsDTskY.js`
+- `recipes.json`
+
+**Next steps:**
+- show an endpoint like `https://recipi-6gjlno6o87a7532b.ap-singapore.app.tcloudba
+- configure. Can you scroll down on that page and look for CORS/domain settings?
+- see successful translation calls
+- display fully translated
+- see no more CORS errors.
+- show errors when you add a recipe.
+- be tencent setup with no reference to sup abase?
+- allow anonymous users to call it.
+- delete it and recreate it with the correct code.
+- grant them. But here's the plan:
+
+---
