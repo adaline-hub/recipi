@@ -962,3 +962,26 @@ Discussed: 🔐 Signing in anonymously to Tencent...; when i go to document data
 - redeploy after the rebuild.
 
 ---
+
+## April 6, 2026
+
+Discussed: when i go to document database, i cannot go further because …; what to do here? i dont see upload file button; Here?; can you create this json file in the project root so i can u…; done
+
+**Files touched:**
+- `recipes.json`
+- `index-Ca0Vyd9u.js`
+- `tencentSync.js`
+
+**Next steps:**
+- switch to Cloud Storage** — we saw that in the sidebar and it works. Instead of
+- get to the actual file storage area. Look in the left sidebar — click **"File Ma
+- use in the code.
+- look something like:
+- now show the UI (even if recipes don't sync). If you still see a blank screen, t
+- read the actual error messages (the red text at the bottom).
+- rebuild automatically—try refreshing Safari now. Let me know if the error is gon
+- rebuild the app:
+- redeploy after the rebuild.
+- have the access to update and deploy updates. you have been doing so. it’s on th
+
+---
