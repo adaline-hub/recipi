@@ -376,3 +376,9 @@
 **Files Changed:** index-Ca0Vyd9u.js, tencentSync.js, index-Dn6sl-5V.js, index-CDKGdPxR.js, index-BjIXe75S.js, index-B1SafncQ.js
 
 ---
+## 2026-04-07T06:03:26.511Z — claude
+**Summary:** Discussed: still saying this. i closed out safari app and reopened to r…; this is on https://adaline-hub.github.io/recipi/; did command shift r and all pages are now loading blank; [Error] Unhandled Promise Rejection: TypeError: null is not …; so i got this error above from safari. its still the same er…
+**Duration:** 5 min
+**Files Changed:** index-Ca0Vyd9u.js, tencentSync.js, index-Dn6sl-5V.js, index-CDKGdPxR.js, index-BjIXe75S.js, index-B1SafncQ.js
+
+---
