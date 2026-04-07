@@ -1291,3 +1291,29 @@ Discussed: still saying this. i closed out safari app and reopened to r…; this
 - load now even if CloudBase storage fails.
 
 ---
+
+## April 6, 2026
+
+Discussed: still saying this. i closed out safari app and reopened to r…; this is on https://adaline-hub.github.io/recipi/; did command shift r and all pages are now loading blank; [Error] Unhandled Promise Rejection: TypeError: null is not …; so i got this error above from safari. its still the same er…
+
+**Files touched:**
+- `index-Ca0Vyd9u.js`
+- `tencentSync.js`
+- `index-Dn6sl-5V.js`
+- `index-CDKGdPxR.js`
+- `index-BjIXe75S.js`
+- `index-B1SafncQ.js`
+
+**Next steps:**
+- rebuild the app:
+- redeploy after the rebuild.
+- have the access to update and deploy updates. you have been doing so. it’s on th
+- rebuild automatically. Now do a **hard refresh** on Safari (Cmd+Shift+R) to clea
+- be gone when the page reloads.
+- remember that im not using local host. im on github page now which you have the
+- commit and push. Should I do that now?
+- redeploy in ~1-2 minutes. Hard refresh your browser once the deploy completes an
+- see the exact error to fix it.
+- load now even if CloudBase storage fails.
+
+---
