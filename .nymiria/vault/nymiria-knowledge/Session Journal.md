@@ -1590,3 +1590,21 @@ Discussed: hi; can you view the codebase of this recipi project? i want to …; 
 - pick this up shortly; if you want, I can verify the live URL once it finishes de
 
 ---
+
+## April 9, 2026
+
+Discussed: hi; can you view the codebase of this recipi project? i want to …; when i click on “select photo” in adding a recipe screen, on…; i can just refresh and mobile site and it will work? you pus…; yes please commit push and deploy to live site
+
+**Files touched:**
+- `src/components/RecipeForm.jsx`
+- `RecipeForm.jsx`
+- `index-BJCKDNl5.js`
+- `index-B1SafncQ.js`
+- `index-DorhUaiH.js`
+
+**Next steps:**
+- have both options - take a photo or add existing photo from mobile storage
+- allow both camera and existing photos.
+- pick this up shortly; if you want, I can verify the live URL once it finishes de
+
+---
