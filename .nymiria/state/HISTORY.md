@@ -500,3 +500,9 @@
 **Files Changed:** src/components/RecipeForm.jsx, RecipeForm.jsx, index-BJCKDNl5.js, index-B1SafncQ.js, index-DorhUaiH.js
 
 ---
+## 2026-04-10T22:07:37.912Z — codex
+**Summary:** Discussed: hi; can you view the codebase of this recipi project? i want to …; when i click on “select photo” in adding a recipe screen, on…; i can just refresh and mobile site and it will work? you pus…; yes please commit push and deploy to live site
+**Duration:** 108 min
+**Files Changed:** src/components/RecipeForm.jsx, src/App.jsx, src/lib/tencentSync.js, src/components/RecipeList.jsx, src/components/TranslationModal.jsx, src/components/RecipeDetail.jsx, src/lib/supabaseClient.js, src/utils/translateRecipe.js, src/components/ImportExport.jsx, RecipeForm.jsx, index-BJCKDNl5.js, index-B1SafncQ.js, index-DorhUaiH.js, App.jsx, tencentSync.js
+
+---
