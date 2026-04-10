@@ -1343,3 +1343,18 @@ Discussed: still saying this. i closed out safari app and reopened to r…; this
 - load now even if CloudBase storage fails.
 
 ---
+
+## April 9, 2026
+
+Discussed: hi; can you view the codebase of this recipi project? i want to …; when i click on “select photo” in adding a recipe screen, on…; i can just refresh and mobile site and it will work? you pus…; yes please commit push and deploy to live site
+
+**Files touched:**
+- `src/components/RecipeForm.jsx`
+- `RecipeForm.jsx`
+- `index-BJCKDNl5.js`
+
+**Next steps:**
+- have both options - take a photo or add existing photo from mobile storage
+- allow both camera and existing photos.
+
+---
