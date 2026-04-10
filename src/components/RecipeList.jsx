@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRecipes } from '../hooks/useRecipes';
 import SyncStatus from './SyncStatus';
@@ -6,13 +6,10 @@ import SyncStatus from './SyncStatus';
 export default function RecipeList({ onSelectRecipe, onAddRecipe, onImportExport }) {
   const recipes = useRecipes();
   const [search, setSearch] = useState('');
-  const [translatedTitles, setTranslatedTitles] = useState({});
   const { t, i18n } = useTranslation();
   const currentLang = i18n.language;
-
-  // Show translated recipe titles from stored translations
-  useEffect(() => {
-    if (!recipes || recipes.length === 0) return;
+  const translatedTitles = useMemo(() => {
+    if (!recipes || recipes.length === 0) return {};
 
     const newTitles = {};
     for (const recipe of recipes) {
@@ -21,11 +18,10 @@ export default function RecipeList({ onSelectRecipe, onAddRecipe, onImportExport
         newTitles[recipe.id] = recipe.title;
         continue;
       }
-      // Use saved translation if available
       const saved = recipe.translations?.[currentLang];
       newTitles[recipe.id] = saved?.title || recipe.title;
     }
-    setTranslatedTitles(newTitles);
+    return newTitles;
   }, [recipes, currentLang]);
 
   const filtered = (recipes || []).filter((r) => {

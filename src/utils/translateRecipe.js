@@ -1,7 +1,7 @@
 // Translation temporarily disabled - Cloud Function permissions need to be fixed
 const ALL_LANGUAGES = ['en', 'zh-CN', 'fr', 'ja'];
 
-export async function translateRecipeToAllLanguages(recipe, sourceLanguage) {
+export async function translateRecipeToAllLanguages(recipe, _sourceLanguage) {
   const translations = {};
   for (const targetLang of ALL_LANGUAGES) {
     translations[targetLang] = {

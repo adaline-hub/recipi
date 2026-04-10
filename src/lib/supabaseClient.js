@@ -14,7 +14,7 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
  */
 export async function testConnection() {
   try {
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('recipes')
       .select('id')
       .limit(1);
