@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRecipe } from '../hooks/useRecipes';
 import { db } from '../db';
@@ -18,11 +18,27 @@ const SUPPORTED_LANGUAGES = [
   { code: 'zh-CN', label: '中文（简体）' },
 ];
 
+// Known comment authors (the two people using this app)
+const KNOWN_AUTHORS = [
+  { id: 'lindsay', name: 'Little B' },
+  { id: 'mama', name: 'Little Pan' },
+];
+
+const COMMENT_MAX_LENGTH = 500;
+
 export default function RecipeDetail({ recipeId, onBack, onEdit }) {
   const recipe = useRecipe(recipeId);
   const [confirming, setConfirming] = useState(false);
   const { t, i18n } = useTranslation();
   const currentLang = i18n.language;
+
+  // Comments state
+  const [selectedAuthor, setSelectedAuthor] = useState(KNOWN_AUTHORS[0].id);
+  const [commentText, setCommentText] = useState('');
+  const [commentError, setCommentError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [lastSubmitted, setLastSubmitted] = useState(0);
+  const commentTextRef = useRef(null);
 
   async function handleDelete() {
     // Delete from local db first
@@ -32,6 +48,55 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
     await deleteRecipeFromSupabase(recipeId);
 
     onBack();
+  }
+
+  async function handleAddComment() {
+    const text = commentText.trim();
+
+    if (!text) {
+      setCommentError(t('comments.error_empty'));
+      return;
+    }
+
+    if (text.length > COMMENT_MAX_LENGTH) {
+      setCommentError(t('comments.error_too_long', { max: COMMENT_MAX_LENGTH }));
+      return;
+    }
+
+    setSubmitting(true);
+    setCommentError('');
+
+    try {
+      const comments = recipe.comments || [];
+      const author = KNOWN_AUTHORS.find((a) => a.id === selectedAuthor);
+      const newComment = {
+        id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+        text,
+        author: author?.name || selectedAuthor,
+        authorId: selectedAuthor,
+        createdAt: new Date().toISOString(),
+      };
+
+      await db.recipes.update(recipeId, {
+        comments: [...comments, newComment],
+        updatedAt: new Date().toISOString(),
+      });
+
+      setCommentText('');
+      setLastSubmitted((n) => n + 1);
+    } catch (err) {
+      console.error('Failed to add comment:', err);
+      setCommentError('Failed to save comment. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  function handleCommentKeyDown(e) {
+    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+      e.preventDefault();
+      handleAddComment();
+    }
   }
 
 
@@ -56,7 +121,7 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
 
   const originalLangLabel = LANGUAGE_LABELS[recipe.language] || recipe.language || 'English';
   const currentLangLabel = LANGUAGE_LABELS[currentLang] || currentLang;
-  
+
   // Get translation metadata if available
   const translationMetadata = isTranslated ? translatedContent : null;
 
@@ -75,6 +140,24 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
     const date = new Date(timestamp);
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' });
   }
+
+  function formatCommentTime(timestamp) {
+    if (!timestamp) return '';
+    const date = new Date(timestamp);
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMins = Math.floor(diffMs / 60000);
+    if (diffMins < 1) return 'just now';
+    if (diffMins < 60) return `${diffMins}m ago`;
+    const diffHours = Math.floor(diffMins / 60);
+    if (diffHours < 24) return `${diffHours}h ago`;
+    const diffDays = Math.floor(diffHours / 24);
+    if (diffDays < 7) return `${diffDays}d ago`;
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  }
+
+  const comments = recipe.comments || [];
+  const authorName = KNOWN_AUTHORS.find((a) => a.id === selectedAuthor)?.name || '';
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#f0f9ff' }}>
@@ -193,6 +276,111 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
             <p className="text-gray-600 text-base leading-relaxed whitespace-pre-wrap">{displayNotes}</p>
           </section>
         )}
+
+        {/* ── Comments Section ── */}
+        <section className="bg-white rounded-2xl border border-blue-100 p-4 space-y-4">
+          <div className="flex items-center gap-2">
+            <h2 className="text-lg font-bold text-blue-700 uppercase tracking-wide">{t('comments.title')}</h2>
+            {comments.length > 0 && (
+              <span className="bg-blue-100 text-blue-600 text-xs font-semibold px-2 py-0.5 rounded-full">
+                {comments.length}
+              </span>
+            )}
+          </div>
+
+          {/* Comment list */}
+          {comments.length === 0 ? (
+            <p className="text-gray-400 text-sm italic">{t('comments.empty')}</p>
+          ) : (
+            <ul className="space-y-3">
+              {comments.map((comment) => (
+                <li key={comment.id} className="flex gap-3">
+                  {/* Avatar circle */}
+                  <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">
+                    {(comment.author || '?')[0].toUpperCase()}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-baseline gap-2 flex-wrap">
+                      <span className="text-sm font-semibold text-gray-800">{comment.author || 'Someone'}</span>
+                      <span className="text-xs text-gray-400">{formatCommentTime(comment.createdAt)}</span>
+                    </div>
+                    <p className="text-gray-700 text-sm leading-relaxed mt-0.5 whitespace-pre-wrap break-words">
+                      {comment.text}
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+
+          {/* Add comment form */}
+          <div className="pt-2 border-t border-gray-100 space-y-3">
+            {/* Author selector */}
+            <div>
+              <label className="block text-xs font-semibold text-gray-500 mb-1 uppercase tracking-wide">
+                {t('comments.label_your_name')}
+              </label>
+              <div className="flex gap-2">
+                {KNOWN_AUTHORS.map((author) => (
+                  <button
+                    key={author.id}
+                    onClick={() => setSelectedAuthor(author.id)}
+                    className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium border-2 transition-colors ${
+                      selectedAuthor === author.id
+                        ? 'border-blue-500 bg-blue-50 text-blue-700'
+                        : 'border-gray-200 text-gray-500 hover:border-blue-300'
+                    }`}
+                  >
+                    {author.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Comment input */}
+            <div>
+              <textarea
+                ref={commentTextRef}
+                value={commentText}
+                onChange={(e) => {
+                  setCommentText(e.target.value);
+                  if (commentError) setCommentError('');
+                }}
+                onKeyDown={handleCommentKeyDown}
+                placeholder={t('comments.placeholder')}
+                rows={3}
+                maxLength={COMMENT_MAX_LENGTH}
+                className={`w-full px-3 py-2.5 rounded-xl border-2 text-sm text-gray-800 placeholder-gray-400 resize-none focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all ${
+                  commentError ? 'border-red-400 bg-red-50' : 'border-gray-200 focus:border-blue-400'
+                }`}
+              />
+              <div className="flex items-center justify-between mt-1">
+                {commentError ? (
+                  <p className="text-red-500 text-xs">{commentError}</p>
+                ) : (
+                  <p className="text-xs text-gray-400">{t('comments.name_hint')}</p>
+                )}
+                <p className="text-xs text-gray-400">
+                  {t('comments.char_count', { count: commentText.length, max: COMMENT_MAX_LENGTH })}
+                </p>
+              </div>
+            </div>
+
+            {/* Submit */}
+            <button
+              onClick={handleAddComment}
+              disabled={submitting || !commentText.trim()}
+              className={`w-full py-3 rounded-xl font-semibold text-sm transition-all ${
+                submitting || !commentText.trim()
+                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                  : 'bg-blue-500 text-white hover:bg-blue-600 active:bg-blue-700'
+              }`}
+            >
+              {submitting ? '…' : t('comments.submit')}
+            </button>
+            <p className="text-xs text-gray-400 text-center">⌘ + Enter to post</p>
+          </div>
+        </section>
 
         {/* Actions */}
         <div className="pt-4 space-y-3">

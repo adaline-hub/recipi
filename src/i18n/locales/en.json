@@ -85,5 +85,16 @@
     "target_language": "Translate to",
     "original_label": "Original ({{lang}})",
     "save_button": "Save {{lang}} Translation"
+  },
+  "comments": {
+    "title": "Comments",
+    "placeholder": "Add a comment…",
+    "submit": "Post",
+    "empty": "No comments yet — be the first!",
+    "char_count": "{{count}} / {{max}}",
+    "error_empty": "Please write something before posting.",
+    "error_too_long": "Comment must be under {{max}} characters.",
+    "label_your_name": "Your name",
+    "name_hint": "So they know who wrote it"
   }
 }

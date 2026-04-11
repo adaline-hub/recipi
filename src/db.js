@@ -27,3 +27,9 @@ db.version(5).stores({
   // createdBy field added: string (person's name/initials)
   // Allows searching recipes by creator
 });
+
+db.version(6).stores({
+  recipes: 'id, title, createdBy, language, createdAt, updatedAt'
+  // comments field added: [{ id, text, author, createdAt }]
+  // Comments are stored inline on the recipe so they sync automatically via existing cloud sync
+});
