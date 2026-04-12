@@ -1813,3 +1813,29 @@ Discussed: hi; can you view the codebase of this recipi project? i want to …; 
 - pick this up shortly; if you want, I can verify the live URL once it finishes de
 
 ---
+
+## April 12, 2026
+
+Discussed: i can just refresh and mobile site and it will work? you pus…; yes please commit push and deploy to live site; i dont see the change on live site - https://adaline-hub.git…; did you make changes to the live site - https://adaline-hub.…; yes please commit and push
+
+**Files touched:**
+- `src/components/RecipeForm.jsx`
+- `src/App.jsx`
+- `src/lib/tencentSync.js`
+- `src/components/RecipeList.jsx`
+- `src/components/TranslationModal.jsx`
+- `src/components/RecipeDetail.jsx`
+- `src/lib/supabaseClient.js`
+- `src/utils/translateRecipe.js`
+- `src/components/ImportExport.jsx`
+- `src/db.js`
+
+**Next steps:**
+- allow both camera and existing photos.
+- pick this up shortly; if you want, I can verify the live URL once it finishes de
+- free up space in supabase for a new project otto
+- keep first.
+- be viewable cross device and cross location and cross user. check and fix what y
+- import `saveRecipeToSupabase` and call it after saving the comment to local DB.
+
+---
