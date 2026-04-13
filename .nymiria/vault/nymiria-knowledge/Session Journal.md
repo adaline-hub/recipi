@@ -1892,3 +1892,29 @@ Discussed: yes please commit and push; yes please commit and push; yes please ve
 - appear automatically (within polling window, typically <=10s) without manual ref
 
 ---
+
+## April 13, 2026
+
+Discussed: yes please commit and push; yes please verify; it worked thanks nymiria; sure don’t change anything but do a final pass; anything you recommend changing/updating/fixing here without…
+
+**Files touched:**
+- `src/App.jsx`
+- `src/lib/tencentSync.js`
+- `src/components/RecipeList.jsx`
+- `src/components/TranslationModal.jsx`
+- `src/components/RecipeDetail.jsx`
+- `src/lib/supabaseClient.js`
+- `src/utils/translateRecipe.js`
+- `src/components/ImportExport.jsx`
+- `src/db.js`
+- `src/i18n/locales/en.json`
+
+**Next steps:**
+- pick this up shortly; if you want, I can verify the live URL once it finishes de
+- free up space in supabase for a new project otto
+- keep first.
+- be viewable cross device and cross location and cross user. check and fix what y
+- import `saveRecipeToSupabase` and call it after saving the comment to local DB.
+- appear automatically (within polling window, typically <=10s) without manual ref
+
+---
