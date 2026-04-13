@@ -535,3 +535,9 @@
 **Files Changed:** src/components/RecipeForm.jsx, src/App.jsx, src/lib/tencentSync.js, src/components/RecipeList.jsx, src/components/TranslationModal.jsx, src/components/RecipeDetail.jsx, src/lib/supabaseClient.js, src/utils/translateRecipe.js, src/components/ImportExport.jsx, src/db.js, src/i18n/locales/en.json, RecipeForm.jsx, index-BJCKDNl5.js, index-B1SafncQ.js, index-DorhUaiH.js
 
 ---
+## 2026-04-13T08:10:20.684Z — codex
+**Summary:** Discussed: yes please commit push and deploy to live site; i dont see the change on live site - https://adaline-hub.git…; did you make changes to the live site - https://adaline-hub.…; yes please commit and push; yes please commit and push
+**Duration:** 45 min
+**Files Changed:** src/components/RecipeForm.jsx, src/App.jsx, src/lib/tencentSync.js, src/components/RecipeList.jsx, src/components/TranslationModal.jsx, src/components/RecipeDetail.jsx, src/lib/supabaseClient.js, src/utils/translateRecipe.js, src/components/ImportExport.jsx, src/db.js, src/i18n/locales/en.json, RecipeForm.jsx, index-BJCKDNl5.js, index-B1SafncQ.js, index-DorhUaiH.js
+
+---
