@@ -71,6 +71,7 @@ async function ensureAuth() {
     console.log('[TencentSync] Auth successful');
   } catch (err) {
     console.error('[TencentSync] Auth error:', err);
+    throw err;
   }
 }
 
@@ -88,9 +89,17 @@ async function downloadRecipes() {
       console.error('[TencentSync] Failed to fetch:', res.status);
       return null;
     }
-    const data = await res.json();
+    let data;
+    try {
+      data = await res.json();
+    } catch (parseErr) {
+      // File exists but content is corrupted (e.g. blob URL string was uploaded instead of JSON).
+      // Return [] so the caller will re-upload local data to heal the cloud file.
+      console.warn('[TencentSync] Cloud file corrupt, will overwrite with local data:', parseErr.message);
+      return [];
+    }
     console.log(`[TencentSync] Downloaded ${Array.isArray(data) ? data.length : 0} recipes`);
-    return data;
+    return Array.isArray(data) ? data : [];
   } catch (err) {
     console.error('[TencentSync] Download error:', err);
     return null;
@@ -99,16 +108,13 @@ async function downloadRecipes() {
 
 async function uploadRecipes(recipes) {
   const blob = new Blob([JSON.stringify(recipes)], { type: 'application/json' });
-  const objectUrl = URL.createObjectURL(blob);
   try {
     console.log(`[TencentSync] Uploading ${recipes.length} recipes to cloud...`);
-    await app.uploadFile({ cloudPath: RECIPES_CLOUD_PATH, filePath: objectUrl });
+    await app.uploadFile({ cloudPath: RECIPES_CLOUD_PATH, filePath: blob });
     console.log('[TencentSync] Upload successful');
   } catch (err) {
     console.error('[TencentSync] Upload error:', err);
     throw err;
-  } finally {
-    URL.revokeObjectURL(objectUrl);
   }
 }
 
@@ -232,7 +238,11 @@ export async function fetchRecipesFromCloud() {
       setSyncStatus(SYNC_STATUS.SYNCING);
       await ensureAuth();
 
-      const cloudRecipes = (await downloadRecipes()) || [];
+      const downloadResult = await downloadRecipes();
+      if (downloadResult === null) {
+        throw new Error('Cloud download failed');
+      }
+      const cloudRecipes = downloadResult;
       const localRecipes = await db.recipes.toArray();
 
       const cloudById = new Map(cloudRecipes.map((recipe) => [recipe.id, recipe]));
@@ -355,7 +365,10 @@ export async function saveRecipeToCloud(recipe) {
       console.log('[TencentSync] Saved to local Dexie');
 
       // ── Step 2: Fetch latest cloud state, merge, and push back ──────────
-      const existing = (await downloadRecipes()) || [];
+      const existing = await downloadRecipes();
+      if (existing === null) {
+        throw new Error('Cloud download failed during save');
+      }
       const cloudRecipe = existing.find((r) => r.id === recipe.id);
 
       console.log('[TencentSync] Cloud recipe exists:', !!cloudRecipe);
@@ -426,7 +439,10 @@ export async function deleteRecipeFromCloud(recipeId) {
     setSyncStatus(SYNC_STATUS.SYNCING);
     await ensureAuth();
 
-    const existing = (await downloadRecipes()) || [];
+    const existing = await downloadRecipes();
+    if (existing === null) {
+      throw new Error('Cloud download failed during delete');
+    }
     await uploadRecipes(existing.filter(r => r.id !== recipeId));
 
     setSyncStatus(SYNC_STATUS.SYNCED);
