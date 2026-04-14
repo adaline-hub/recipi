@@ -1,8 +1,9 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRecipe } from '../hooks/useRecipes';
 import { db } from '../db';
-import { deleteRecipeFromSupabase } from '../lib/tencentSync';
+import { deleteRecipeFromSupabase, saveRecipeToSupabase } from '../lib/tencentSync';
+import SyncStatus from './SyncStatus';
 
 const LANGUAGE_LABELS = {
   en: 'English',
@@ -10,13 +11,6 @@ const LANGUAGE_LABELS = {
   ja: '日本語',
   'zh-CN': '中文（简体）',
 };
-
-const SUPPORTED_LANGUAGES = [
-  { code: 'en', label: 'English' },
-  { code: 'fr', label: 'Français' },
-  { code: 'ja', label: '日本語' },
-  { code: 'zh-CN', label: '中文（简体）' },
-];
 
 // Known comment authors (the two people using this app)
 const KNOWN_AUTHORS = [
@@ -37,8 +31,6 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
   const [commentText, setCommentText] = useState('');
   const [commentError, setCommentError] = useState('');
   const [submitting, setSubmitting] = useState(false);
-  const [lastSubmitted, setLastSubmitted] = useState(0);
-  const commentTextRef = useRef(null);
 
   async function handleDelete() {
     // Delete from local db first
@@ -67,7 +59,12 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
     setCommentError('');
 
     try {
-      const comments = recipe.comments || [];
+      const latestRecipe = await db.recipes.get(recipeId);
+      if (!latestRecipe) {
+        throw new Error('Recipe not found');
+      }
+
+      const comments = latestRecipe.comments || [];
       const author = KNOWN_AUTHORS.find((a) => a.id === selectedAuthor);
       const newComment = {
         id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
@@ -77,13 +74,19 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
         createdAt: new Date().toISOString(),
       };
 
-      await db.recipes.update(recipeId, {
+      const updatedRecipe = {
+        ...latestRecipe,
         comments: [...comments, newComment],
-        updatedAt: new Date().toISOString(),
-      });
+        updatedAt: Date.now(),
+      };
+
+      await db.recipes.put(updatedRecipe);
+      const saved = await saveRecipeToSupabase(updatedRecipe);
+      if (!saved) {
+        throw new Error('Cloud sync failed');
+      }
 
       setCommentText('');
-      setLastSubmitted((n) => n + 1);
     } catch (err) {
       console.error('Failed to add comment:', err);
       setCommentError('Failed to save comment. Please try again.');
@@ -157,15 +160,17 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
   }
 
   const comments = recipe.comments || [];
-  const authorName = KNOWN_AUTHORS.find((a) => a.id === selectedAuthor)?.name || '';
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#f0f9ff' }}>
       {/* Header */}
       <div style={{ backgroundColor: '#3b82f6' }} className="px-4 pt-10 pb-6">
-        <button onClick={onBack} className="text-blue-100 text-sm mb-3 flex items-center gap-1">
-          {t('detail.back')}
-        </button>
+        <div className="flex items-center justify-between mb-3">
+          <button onClick={onBack} className="text-blue-100 text-sm flex items-center gap-1">
+            {t('detail.back')}
+          </button>
+          <SyncStatus />
+        </div>
         <h1 className="text-2xl font-bold text-white leading-tight">{displayTitle}</h1>
 
         {/* Creator and date info */}
@@ -340,7 +345,6 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
             {/* Comment input */}
             <div>
               <textarea
-                ref={commentTextRef}
                 value={commentText}
                 onChange={(e) => {
                   setCommentText(e.target.value);

@@ -4,16 +4,16 @@ import RecipeDetail from './components/RecipeDetail';
 import RecipeForm from './components/RecipeForm';
 import ImportExport from './components/ImportExport';
 import LanguageSwitcher from './components/LanguageSwitcher';
-import { fetchRecipesFromSupabase, subscribeToRecipeChanges, unsubscribeFromRecipeChanges } from './lib/tencentSync';
+import { fetchRecipesFromCloud, subscribeToRecipeChanges, unsubscribeFromRecipeChanges } from './lib/tencentSync';
 
 // Views: list | detail | add | edit | importexport
 export default function App() {
   const [view, setView] = useState('list');
   const [selectedRecipeId, setSelectedRecipeId] = useState(null);
 
-  // Initialize Supabase sync on app load
+  // Initialize Tencent Cloud sync on app load
   useEffect(() => {
-    fetchRecipesFromSupabase();
+    fetchRecipesFromCloud();
     subscribeToRecipeChanges();
 
     return () => {

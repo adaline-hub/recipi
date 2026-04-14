@@ -1,0 +1,60 @@
+name: Playwright Comment Repro
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      run_cloud_repro:
+        description: 'Run cloud repro (opt-in, requires cloud credentials)'
+        required: true
+        default: false
+        type: boolean
+
+jobs:
+  local-deterministic-repro:
+    name: Local deterministic repro (CI-safe)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run deterministic local repro
+        run: npm run repro:playwright:comments
+
+  cloud-repro-manual:
+    name: Cloud repro (manual opt-in)
+    if: github.event_name == 'workflow_dispatch' && inputs.run_cloud_repro == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run cloud repro
+        run: npm run repro:playwright:comments:cloud
