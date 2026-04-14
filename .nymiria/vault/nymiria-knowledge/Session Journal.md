@@ -1971,3 +1971,29 @@ Discussed: Deleted. i will work on otto project in the otto channel. no…; No w
 - fix permissions
 
 ---
+
+## April 13, 2026
+
+Discussed: did you fix it yet with tencent?; remember for recipi project we no longer use supabase anymor…; i syned, added a new comment and still dont see the new comm…; i syned, added a new comment and still dont see the new comm…; no im still not seeing the new comment cross device that we …
+
+**Decisions:**
+- see the current translation implementation
+
+**Files touched:**
+- `src/lib/tencentSync.js`
+- `src/components/RecipeDetail.jsx`
+- `src/lib/syncService.js`
+- `src/utils/translateRecipe.js`
+- `src/utils/translateRecipe.ts`
+- `src/config/supabase.ts`
+- `src/hooks/useRecipes.ts`
+- `src/components/recipe/CloudSyncStatus.tsx`
+- `src/config/tencentCloud.ts`
+- `src/config/baiduTranslate.ts`
+
+**Next steps:**
+- appear automatically (within polling window, typically <=10s) without manual ref
+- be fixed." Let me check the actual implementation and Supabase setup.
+- fix permissions
+
+---

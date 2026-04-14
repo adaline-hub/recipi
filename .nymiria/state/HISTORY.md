@@ -565,3 +565,10 @@
 **Decisions:** see the current translation implementation
 
 ---
+## 2026-04-14T06:15:42.861Z — codex
+**Summary:** Discussed: did you fix it yet with tencent?; remember for recipi project we no longer use supabase anymor…; i syned, added a new comment and still dont see the new comm…; i syned, added a new comment and still dont see the new comm…; no im still not seeing the new comment cross device that we …
+**Duration:** 5 min
+**Files Changed:** src/lib/tencentSync.js, src/components/RecipeDetail.jsx, src/lib/syncService.js, src/utils/translateRecipe.js, src/utils/translateRecipe.ts, src/config/supabase.ts, src/hooks/useRecipes.ts, src/components/recipe/CloudSyncStatus.tsx, src/config/tencentCloud.ts, src/config/baiduTranslate.ts, src/hooks/useComments.ts, src/store/commentStore.ts, src/services/commentService.ts, src/components/comments/CommentSection.tsx, src/services/recipeService.ts
+**Decisions:** see the current translation implementation
+
+---
