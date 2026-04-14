@@ -85,3 +85,18 @@ In the Tencent console, look for an **"Edit"** or **"Modify"** button on the tra
 **2. For 
 
 ---
+## 2026-04-14 — see the current translation implementation
+**Provider:** minimax
+**Rationale:** (auto-detected)
+**Source:** I'll fix the translation and run e2e tests. Let me start by examining the translation setup.
+
+---
+
+**Fixing Translation**
+
+Looking at the translation utility... the comment says "Cloud Function permissions need to be fixed." Let me check the actual implementation and Supabase setup.
+
+```bash
+# First
+
+---
