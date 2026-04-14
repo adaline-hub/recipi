@@ -559,3 +559,9 @@
 **Files Changed:** src/db.js, src/components/RecipeDetail.jsx, src/i18n/locales/en.json, src/lib/tencentSync.js, src/lib/syncService.js, db.js, RecipeDetail.jsx, en.json, fr.json, ja.json, zh-CN.json, tencentSync.js, syncService.js
 
 ---
+## 2026-04-14T04:47:01.887Z — codex
+**Summary:** Discussed: Deleted. i will work on otto project in the otto channel. no…; No wait, we do not use supabase anymore remember? we moved e…; did you fix it yet with tencent?; remember for recipi project we no longer use supabase anymor…; i syned, added a new comment and still dont see the new comm…
+**Files Changed:** src/lib/tencentSync.js, src/components/RecipeDetail.jsx, src/lib/syncService.js, src/utils/translateRecipe.js, src/utils/translateRecipe.ts, src/config/supabase.ts, src/hooks/useRecipes.ts, src/components/recipe/CloudSyncStatus.tsx, src/config/tencentCloud.ts, src/config/baiduTranslate.ts, src/hooks/useComments.ts, src/store/commentStore.ts, src/services/commentService.ts, src/components/comments/CommentSection.tsx, src/services/recipeService.ts
+**Decisions:** see the current translation implementation
+
+---

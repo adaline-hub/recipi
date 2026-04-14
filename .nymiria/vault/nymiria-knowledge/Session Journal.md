@@ -1943,3 +1943,31 @@ Discussed: can we add a comment field at the end of each recipe and mak…; yes 
 - appear automatically (within polling window, typically <=10s) without manual ref
 
 ---
+
+## April 13, 2026
+
+Discussed: Deleted. i will work on otto project in the otto channel. no…; No wait, we do not use supabase anymore remember? we moved e…; did you fix it yet with tencent?; remember for recipi project we no longer use supabase anymor…; i syned, added a new comment and still dont see the new comm…
+
+**Decisions:**
+- see the current translation implementation
+
+**Files touched:**
+- `src/lib/tencentSync.js`
+- `src/components/RecipeDetail.jsx`
+- `src/lib/syncService.js`
+- `src/utils/translateRecipe.js`
+- `src/utils/translateRecipe.ts`
+- `src/config/supabase.ts`
+- `src/hooks/useRecipes.ts`
+- `src/components/recipe/CloudSyncStatus.tsx`
+- `src/config/tencentCloud.ts`
+- `src/config/baiduTranslate.ts`
+
+**Next steps:**
+- be viewable cross device and cross location and cross user. check and fix what y
+- import `saveRecipeToSupabase` and call it after saving the comment to local DB.
+- appear automatically (within polling window, typically <=10s) without manual ref
+- be fixed." Let me check the actual implementation and Supabase setup.
+- fix permissions
+
+---
