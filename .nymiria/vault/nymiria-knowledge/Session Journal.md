@@ -1918,3 +1918,28 @@ Discussed: yes please commit and push; yes please verify; it worked thanks nymir
 - appear automatically (within polling window, typically <=10s) without manual ref
 
 ---
+
+## April 13, 2026
+
+Discussed: can we add a comment field at the end of each recipe and mak…; yes proceed; can we add a comment field at the end of each recipe and mak…; can we add a comment field at the end of each recipe and mak…; can we add a comment field at the end of each recipe and mak…
+
+**Files touched:**
+- `src/db.js`
+- `src/components/RecipeDetail.jsx`
+- `src/i18n/locales/en.json`
+- `src/lib/tencentSync.js`
+- `src/lib/syncService.js`
+- `db.js`
+- `RecipeDetail.jsx`
+- `en.json`
+- `fr.json`
+- `ja.json`
+
+**Next steps:**
+- free up space in supabase for a new project otto
+- keep first.
+- be viewable cross device and cross location and cross user. check and fix what y
+- import `saveRecipeToSupabase` and call it after saving the comment to local DB.
+- appear automatically (within polling window, typically <=10s) without manual ref
+
+---
