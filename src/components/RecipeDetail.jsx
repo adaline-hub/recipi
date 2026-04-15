@@ -42,6 +42,18 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
     onBack();
   }
 
+  async function handleDeleteComment(commentId) {
+    const latestRecipe = await db.recipes.get(recipeId);
+    if (!latestRecipe) return;
+    const updatedRecipe = {
+      ...latestRecipe,
+      comments: (latestRecipe.comments || []).filter((c) => c.id !== commentId),
+      updatedAt: Date.now(),
+    };
+    await db.recipes.put(updatedRecipe);
+    await saveRecipeToSupabase(updatedRecipe);
+  }
+
   async function handleAddComment() {
     const text = commentText.trim();
 
@@ -299,7 +311,7 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
           ) : (
             <ul className="space-y-3">
               {comments.map((comment) => (
-                <li key={comment.id} className="flex gap-3">
+                <li key={comment.id} className="flex gap-3 group">
                   {/* Avatar circle */}
                   <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">
                     {(comment.author || '?')[0].toUpperCase()}
@@ -308,6 +320,13 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
                     <div className="flex items-baseline gap-2 flex-wrap">
                       <span className="text-sm font-semibold text-gray-800">{comment.author || 'Someone'}</span>
                       <span className="text-xs text-gray-400">{formatCommentTime(comment.createdAt)}</span>
+                      <button
+                        onClick={() => handleDeleteComment(comment.id)}
+                        className="ml-auto text-gray-300 hover:text-red-400 active:text-red-600 text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                        title="Delete comment"
+                      >
+                        ✕
+                      </button>
                     </div>
                     <p className="text-gray-700 text-sm leading-relaxed mt-0.5 whitespace-pre-wrap break-words">
                       {comment.text}
