@@ -1997,3 +1997,35 @@ Discussed: did you fix it yet with tencent?; remember for recipi project we no l
 - fix permissions
 
 ---
+
+## April 14, 2026
+
+Discussed: did you fix the issues above? you said you were checking the…; yes fix and translation and you test the sync first with e2e…; no forget about supabase for recipi project. we have stopped…; now, look into the comment issue again. entered comments are…; now, look into the comment issue again. entered comments are…
+
+**Decisions:**
+- see the current translation implementation
+
+**Files touched:**
+- `src/utils/translateRecipe.js`
+- `src/utils/translateRecipe.ts`
+- `src/config/supabase.ts`
+- `src/hooks/useRecipes.ts`
+- `src/components/recipe/CloudSyncStatus.tsx`
+- `src/config/tencentCloud.ts`
+- `src/config/baiduTranslate.ts`
+- `src/hooks/useComments.ts`
+- `src/store/commentStore.ts`
+- `src/services/commentService.ts`
+
+**Next steps:**
+- be fixed." Let me check the actual implementation and Supabase setup.
+- fix permissions
+- be saved and synced on a recipe or synced the same way as a recipe. i dont see a
+- I commit and push them now?
+- now appear in the recipe page header (top-right, next to the back button). If yo
+- work: cross-device sync, comments, and incognito.
+- now download valid JSON and show all your recipes
+- see in console:
+- by adding a CI-safe job that runs only the local deterministic repro and keeps c
+
+---

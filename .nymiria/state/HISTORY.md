@@ -572,3 +572,10 @@
 **Decisions:** see the current translation implementation
 
 ---
+## 2026-04-15T06:44:31.686Z — codex
+**Summary:** Discussed: did you fix the issues above? you said you were checking the…; yes fix and translation and you test the sync first with e2e…; no forget about supabase for recipi project. we have stopped…; now, look into the comment issue again. entered comments are…; now, look into the comment issue again. entered comments are…
+**Duration:** 5 min
+**Files Changed:** src/utils/translateRecipe.js, src/utils/translateRecipe.ts, src/config/supabase.ts, src/hooks/useRecipes.ts, src/components/recipe/CloudSyncStatus.tsx, src/config/tencentCloud.ts, src/config/baiduTranslate.ts, src/hooks/useComments.ts, src/store/commentStore.ts, src/services/commentService.ts, src/components/comments/CommentSection.tsx, src/services/recipeService.ts, src/components/recipe/RecipeDetail.tsx, src/lib/tencentSync.js, src/components/RecipeDetail.jsx
+**Decisions:** see the current translation implementation
+
+---
