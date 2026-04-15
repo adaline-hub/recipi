@@ -47,7 +47,9 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
     if (!latestRecipe) return;
     const updatedRecipe = {
       ...latestRecipe,
-      comments: (latestRecipe.comments || []).filter((c) => c.id !== commentId),
+      comments: (latestRecipe.comments || []).map((c) =>
+        c.id === commentId ? { ...c, deleted: true, deletedAt: Date.now() } : c
+      ),
       updatedAt: Date.now(),
     };
     await db.recipes.put(updatedRecipe);
@@ -171,7 +173,7 @@ export default function RecipeDetail({ recipeId, onBack, onEdit }) {
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   }
 
-  const comments = recipe.comments || [];
+  const comments = (recipe.comments || []).filter((c) => !c.deleted);
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#f0f9ff' }}>

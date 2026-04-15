@@ -148,6 +148,12 @@ export function mergeComments(a, b) {
       continue;
     }
 
+    // Deletion is permanent: if either side deleted it, keep it deleted
+    if (comment.deleted || existing.deleted) {
+      byId.set(comment.id, { ...existing, ...comment, deleted: true });
+      continue;
+    }
+
     const existingTs = toMillis(existing.createdAt);
     const incomingTs = toMillis(comment.createdAt);
     if (incomingTs >= existingTs) {
