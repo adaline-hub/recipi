@@ -29,6 +29,7 @@ export default function RecipeForm({ recipeId, onBack, onSaved }) {
     return localStorage.getItem('lastCreatedBy') || 'Little B';
   });
   const [errors, setErrors] = useState({});
+  const [saveError, setSaveError] = useState('');
   const [saving, setSaving] = useState(false);
 
   const isEdit = !!recipeId;
@@ -77,6 +78,7 @@ export default function RecipeForm({ recipeId, onBack, onSaved }) {
       return;
     }
     setErrors({});
+    setSaveError('');
     setSaving(true);
 
     const ingredients = ingredientsText.split('\n').map((s) => s.trim()).filter(Boolean);
@@ -131,7 +133,10 @@ export default function RecipeForm({ recipeId, onBack, onSaved }) {
 
         // Sync to Tencent CloudBase
         const updatedRecipe = await db.recipes.get(recipeId);
-        await saveRecipeToSupabase(updatedRecipe);
+        const saved = await saveRecipeToSupabase(updatedRecipe);
+        if (!saved) {
+          throw new Error('Cloud sync failed while saving recipe');
+        }
 
         onSaved(recipeId);
       } else {
@@ -161,9 +166,18 @@ export default function RecipeForm({ recipeId, onBack, onSaved }) {
         await db.recipes.add(translatedRecipe);
 
         // Sync to Tencent CloudBase
-        await saveRecipeToSupabase(translatedRecipe);
+        const saved = await saveRecipeToSupabase(translatedRecipe);
+        if (!saved) {
+          throw new Error('Cloud sync failed while saving recipe');
+        }
 
         onSaved(id);
+      }
+    } catch (err) {
+      console.error('Failed to save recipe:', err);
+      setSaveError('Failed to sync recipe to cloud. Your local copy is saved; please try again.');
+      if (isEdit) {
+        onSaved(recipeId);
       }
     } finally {
       setSaving(false);
@@ -183,6 +197,11 @@ export default function RecipeForm({ recipeId, onBack, onSaved }) {
       </div>
 
       <div className="px-4 py-6 space-y-5">
+        {saveError && (
+          <div className="rounded-xl border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-700">
+            {saveError}
+          </div>
+        )}
         {/* Language (only shown when creating a new recipe) */}
         {!isEdit && (
           <div>
